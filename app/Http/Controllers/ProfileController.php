@@ -53,9 +53,10 @@ class ProfileController extends Controller
             $path = $file->store('profile_pictures', 'public');
 
             // Optionally delete the old picture to avoid unused files
-            if ($user->profile_picture) {
+            if ($user->profile_picture && $user->profile_picture !== 'profile_pictures/default-avatar.png') {
                 Storage::disk('public')->delete($user->profile_picture);
             }
+
 
             // Save the new path to the user's profile
             $user->profile_picture = $path;
