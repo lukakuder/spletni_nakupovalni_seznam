@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage; // Import Storage facade
+
 
 class User extends Authenticatable
 {
@@ -23,7 +25,9 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-
+    protected $appends = [
+        'profile_picture_url',
+    ];
     protected function casts(): array
     {
         return [
@@ -39,6 +43,22 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Group::class, 'group_user');
     }
+
+    /**
+     * Accessor for the profile picture URL.
+     */
+    /**
+     * Accessor for the profile picture URL.
+     */
+    public function getProfilePictureUrlAttribute(): ?string
+    {
+        return $this->profile_picture
+            ? asset('storage/' . $this->profile_picture)
+            : asset('storage/profile_pictures/default-avatar.png');
+
+    }
+
+
 
     /**
      * The lists that belong only to the user, and aren't associated with a group.
