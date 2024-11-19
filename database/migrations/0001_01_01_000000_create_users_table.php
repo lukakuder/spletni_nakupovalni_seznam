@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('profile_picture')->nullable();
+            $table->string('profile_picture')->default("profile_pictures/default-avatar.png");
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
