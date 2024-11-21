@@ -1,66 +1,177 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Project Setup Instructions
 
-## About Laravel
+This document contains instructions for setting up **MySQL**, **PHP** using **XAMPP**, and running the project with **Composer**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Prerequisites
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+1. **XAMPP** installed on your machine
+2. **Composer** installed on your machine
+3. **Git** installed (if needed for project cloning)
+4. **Node and NPM** installed
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Step 1: Install XAMPP
 
-## Learning Laravel
+1. Download and install [XAMPP](https://www.apachefriends.org/download.html) for your platform (Windows).
+2. Once installed, open **XAMPP Control Panel**.
+3. Start the **Apache** and **MySQL** services by clicking the **Start** button next to each.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+    - **Apache**: This is the web server that will serve your PHP application.
+    - **MySQL**: This will manage your project’s database.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Step 2: Configure MySQL
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Verify MySQL is Running
 
-## Laravel Sponsors
+1. Open **XAMPP Control Panel**.
+2. Ensure **MySQL** is running (green indicator next to MySQL).
+3. If MySQL is not starting, check the **MySQL error log** in the XAMPP Control Panel for any issues related to the service.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Create a Database (if required)
 
-### Premium Partners
+1. Open **phpMyAdmin** in your browser: `http://localhost/phpmyadmin`.
+2. Create a new database for your project (e.g., `your_project_db`).
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+    - If your project requires a specific database, make sure to create it and note the database name, username, and password (usually, it's `root` for username with no password in XAMPP by default).
 
-## Contributing
+## Step 3: Install PHP via XAMPP
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1. **PHP** is included in **XAMPP**, so you don't need to install it separately.
+2. Ensure that **Apache** and **PHP** are correctly configured. If needed, edit the **php.ini** file for custom settings:
+    - Open **XAMPP Control Panel** and click **Config** next to **Apache** → **php.ini**.
+    - Modify the required PHP settings (e.g., enable `extensions` like `mysqli`, `pdo_mysql`, etc.).
 
-## Code of Conduct
+## Step 4: Install Composer
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+1. Download and install **Composer** from [Composer's official website](https://getcomposer.org/download/).
+2. During installation, make sure to allow Composer to be globally available in your system PATH.
+    - If installed correctly, you can verify by running:
+      ```bash
+      composer --version
+      ```
+      This should output the installed Composer version.
 
-## Security Vulnerabilities
+## Step 4.1: Install Node and NPM
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. Download and install **Node.js** from [Node.js official website](https://nodejs.org/en/download/).
+2. During installation, make sure to allow Node.js to be globally available in your system PATH.
+    - If installed correctly, you can verify by running:
+      ```bash
+      node --version
+      ```
+      This should output the installed Node.js version.
+    - If installed correctly, you can verify by running:
+      ```bash
+      npm --version
+      ```
+      This should output the installed NPM version.
 
-## License
+## Step 5: Clone or Download the Project
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+1. Clone the project from your Git repository or download it as a ZIP file:
+   ```bash
+   git clone https://github.com/lukakuder/spletni_nakupovalni_seznam.git
+   ```
+
+2. Navigate into the project directory:
+   ```bash
+   cd speltni-nakupovalni-seznam
+   ```
+
+## Step 6: Install Dependencies with Composer
+
+1. Install project dependencies by running the following command in the project root directory (where `composer.json` is located):
+   ```bash
+   composer install
+   ```
+   This will install all the necessary dependencies defined in the `composer.json` file and create a `vendor/` directory.
+
+2. If you need to update the dependencies later, run:
+   ```bash
+   composer update
+   ```
+
+
+## Step 6.1: Install Dependencies with NPM
+
+1. Install project dependencies by running the following command in the project root directory (where `package.json` is located):
+   ```bash
+   npm install
+   ```
+   This will install all the necessary dependencies defined in the `package.json` file and create a `node_modules/` directory.
+
+## Step 7: Configure `.env` File
+
+For projects like **Laravel**, configure the `.env` file with your database credentials and other environment variables:
+
+1. Copy the `.env.example` file to `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Edit the `.env` file to match your **MySQL** database settings:
+
+   ```dotenv
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=your_project_db   # Use the database name you created earlier
+   DB_USERNAME=root              # Default MySQL user in XAMPP
+   DB_PASSWORD=                  # Default password in XAMPP is empty
+   ```
+
+---
+
+## Step 8: Run the Project
+
+### For **Laravel Projects**
+
+1. If the project is a **Laravel** application, you can start the local development server using the built-in **Artisan** command:
+   ```bash
+   php artisan serve
+   ```
+
+2. This will start the application at `http://localhost:8000`.
+
+### For Other PHP Projects
+
+1. If you're not using **Laravel**, place your PHP project files in the `htdocs` directory (located in the XAMPP installation folder, e.g., `C:/xampp/htdocs`).
+
+2. For example, if your project is in `C:/xampp/htdocs/your-app/`, open your browser and navigate to:
+   ```plaintext
+   http://localhost/your-app/
+   ```
+
+---
+
+## Step 9: Troubleshooting
+
+### MySQL Errors:
+- If MySQL isn't starting, check the **MySQL error log** in XAMPP for any issues related to port conflicts or file permissions.
+- If you're getting a **MySQL error** when connecting to the database, make sure the database credentials in the `.env` file are correct.
+
+### Apache Errors:
+- If Apache isn’t starting, make sure port 80 is not being used by another service (e.g., IIS, Skype). Change Apache's port in the **httpd.conf** file if necessary.
+- If you're getting an **Apache error**, check the **Apache error log** in XAMPP for more details.
+
+### Composer Issues:
+- If Composer isn’t working, make sure it is installed globally and that the `composer.json` file is correct.
+
+---
+
+## Additional Notes
+
+- Make sure you’re running **XAMPP Control Panel** as **Administrator** for any permission issues.
+- If you have **firewall or antivirus** software, make sure they aren't blocking Apache or MySQL from running.
+
+---
+
+## Conclusion
+
+This setup should get your **MySQL**, **PHP**, and **Composer** running correctly with your project. Let me know if you need further clarification or assistance!
+
+## Additional
+
+Contact us for configuration details and troubleshooting. 
+
+### Happy Coding! 🚀
