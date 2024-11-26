@@ -10,6 +10,22 @@ use Illuminate\View\View;
 class ListController extends Controller
 {
     /**
+     * Display the specified shopping list.
+     *
+     * @param int $id
+     * @return View
+     */
+    public function show($id)
+    {
+        // Find the shopping list by ID and ensure it belongs to the authenticated user
+        $list = ShoppingList::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        return view('lists.show', compact('list'));
+    }
+
+    /**
      * Returns the view to the list creation form
      *
      * @param Request $request
