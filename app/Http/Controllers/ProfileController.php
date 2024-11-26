@@ -23,7 +23,18 @@ class ProfileController extends Controller
         ]);
     }
 
-
+    /**
+     * Returns the view containing users lists
+     *
+     * @param Request $request
+     * @return View
+     */
+    public function myLists(Request $request): View
+    {
+        return view('user.lists', [
+            'lists' => $request->user()->lists,
+        ]);
+    }
 
     /**
      * Update the user's profile information.
