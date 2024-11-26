@@ -27,9 +27,11 @@
                 <div id="list-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach ($lists as $list)
                         <div class="view-card bg-gray-100 dark:bg-gray-900 rounded-lg shadow-md p-4">
-                            <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                                {{ $list->name }}
-                            </h4>
+                            <a href="{{ route('lists.show', $list->id) }}">
+                                <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                                    {{ $list->name }}
+                                </h4>
+                            </a>
                             <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
                                 {{ $list->description }}
                             </p>
@@ -46,9 +48,11 @@
                         <div class="view-list hidden border-b border-gray-300 py-2">
                             <div class="flex justify-between items-center">
                                 <div>
-                                    <h4 class="text-md font-semibold text-gray-800 dark:text-gray-200">
-                                        {{ $list->name }}
-                                    </h4>
+                                    <a href="{{ route('lists.show', $list->id) }}">
+                                        <h4 class="text-md font-semibold text-gray-800 dark:text-gray-200">
+                                            {{ $list->name }}
+                                        </h4>
+                                    </a>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">
                                         {{ $list->description }}
                                     </p>
