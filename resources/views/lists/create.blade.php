@@ -30,7 +30,7 @@
                         <!-- Group Selection (only if the list belongs to a group) -->
                         <input type="hidden" id="belongs_to_a_group" name="belongs_to_a_group" value="{{ $belongs_to_a_group }}">
 
-                        @if ($belongsToGroup)
+                        @if ($belongs_to_a_group)
                             <div class="mb-4">
                                 <label for="group_id" class="block text-sm font-medium text-gray-700">Izberi Skupino</label>
                                 <select id="group_id" name="group_id" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" required>
