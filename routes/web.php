@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ListController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +20,8 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('lists', [ProfileController::class, 'myLists'])->name('user.lists');
+    Route::get('lists/create', [ListController::class, 'create'])->name('lists.create');
+    Route::post('lists/store', [ListController::class, 'store'])->name('lists.store');
 });
 
 require __DIR__.'/auth.php';
