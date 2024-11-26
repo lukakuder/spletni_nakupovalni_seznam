@@ -16,6 +16,13 @@
                         {{ __('Osnovna stran') }}
                     </x-nav-link>
                 </div>
+
+                <!-- Moje Seznami -->
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('user.lists')" :active="request()->routeIs('user.lists')">
+                        {{ __('Moji Seznami') }}
+                    </x-nav-link>
+                </div>
             </div>
 
             <!-- Settings Dropdown -->
