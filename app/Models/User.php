@@ -57,9 +57,6 @@ class User extends Authenticatable
             : asset('storage/profile_pictures/default-avatar.png');
 
     }
-
-
-
     /**
      * The lists that belong only to the user, and aren't associated with a group.
      */
