@@ -35,6 +35,14 @@ class ProfileController extends Controller
             'lists' => $request->user()->lists,
         ]);
     }
+    public function myGroups()
+    {
+        // Fetch the groups for the authenticated user
+        $groups = auth()->user()->groups; // Assuming User model has a `groups` relationship
+
+        // Pass the data to a view
+        return view('user.groups', compact('groups'));
+    }
 
     /**
      * Update the user's profile information.
