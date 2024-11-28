@@ -21,7 +21,12 @@ class Group extends Model
         'name',
         'description'
     ];
-   
+    public function getUsersWithDetails()
+    {
+        return $this->users()
+            ->select('users.id', 'users.name', 'users.email', 'group_user.created_at as joined_at')
+            ->get();
+    }
 
     /**
      * The users that belong to the group.
