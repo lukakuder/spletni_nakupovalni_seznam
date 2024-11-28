@@ -21,10 +21,8 @@ class Group extends Model
         'name',
         'description'
     ];
-    public function getAllMembers()
-    {
-        return $this->users()->get();
-    }
+   
+
     /**
      * The users that belong to the group.
      */
