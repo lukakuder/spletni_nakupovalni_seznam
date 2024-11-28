@@ -23,6 +23,13 @@
                         {{ __('Moji Seznami') }}
                     </x-nav-link>
                 </div>
+
+                <!-- Moje Seznami -->
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('user.groups')" :active="request()->routeIs('user.groups')">
+                        {{ __('Moje skupine') }}
+                    </x-nav-link>
+                </div>
             </div>
 
             <!-- Settings Dropdown -->
