@@ -147,4 +147,17 @@ class ListController extends Controller
             ->with('success', 'Reminder updated successfully!');
     }
 
+    public function updatePurchasedQuantity(Request $request, ListItem $listItem)
+    {
+        $validated = $request->validate([
+            'purchased_quantity' => 'required|integer|min:0|max:' . $listItem->total_quantity,
+        ]);
+
+        $listItem->update([
+            'purchased_quantity' => $validated['purchased_quantity'],
+        ]);
+
+        return redirect()->back()->with('success', __('Purchased quantity updated successfully.'));
+    }
+
 }

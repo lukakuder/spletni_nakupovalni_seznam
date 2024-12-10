@@ -22,10 +22,17 @@ class ListItem extends Model
         'amount',
         'price_per_item',
         'total_price',
+        'total_quantity',
+        'purchased_quantity',
     ];
 
     public function shoppingList()
     {
         return $this->belongsTo(ShoppingList::class, 'shopping_list_id');
+    }
+
+    public function isFullyPurchased()
+    {
+        return $this->purchased_quantity >= $this->total_quantity;
     }
 }

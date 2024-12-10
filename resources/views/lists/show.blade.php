@@ -24,12 +24,31 @@
                     @else
                         <ul>
                             @foreach ($list->items as $item)
-                                <li>
-                                    {{ $item->name }} - {{ $item->amount }}
-                                    @if ($item->price_per_item)
-                                        x {{ number_format($item->price_per_item, 2) }} € =
-                                        {{ number_format($item->total_price, 2) }} €
-                                    @endif
+                                <li class="mb-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            {{ $item->name }} - {{ $item->amount }}
+                                            @if ($item->price_per_item)
+                                                x {{ number_format($item->price_per_item, 2) }} € =
+                                                {{ number_format($item->total_price, 2) }} €
+                                            @endif
+                                            <p>
+                                                <strong>{{ __('Purchased:') }}</strong>
+                                                {{ $item->purchased_quantity }} / {{ $item->amount }}
+                                            </p>
+                                        </div>
+
+                                        <form action="{{ route('list-items.update-purchased', $item->id) }}" method="POST" class="flex items-center">
+                                            @csrf
+                                            <input type="number" name="purchased_quantity" min="0" max="{{ $item->amount }}"
+                                                   value="{{ $item->purchased_quantity }}"
+                                                   class="w-16 border rounded-md text-black px-2 py-1 mr-2">
+                                            <button type="submit"
+                                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded">
+                                                {{ __('Update') }}
+                                            </button>
+                                        </form>
+                                    </div>
                                 </li>
                             @endforeach
                         </ul>
@@ -77,7 +96,6 @@
                                 </div>
                             </form>
 
-
                             @if ($list->reminder_date)
                                 <p class="mt-4 text-sm text-white-600">
                                     {{ __('Reminder set to: ') }}
@@ -92,6 +110,16 @@
                             {{ session('success') }}
                         </div>
                     @endif
+
+                    @if ($errors->any())
+                        <div class="mt-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -100,23 +128,23 @@
     <div id="modal" class="fixed z-10 inset-0 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen">
             <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-lg p-6 border border-gray-300">
-                <h4 class="text-lg font-bold mb-4 text-white">{{ __('Add Item') }}</h4> <!-- White text -->
+                <h4 class="text-lg font-bold mb-4 text-white">{{ __('Add Item') }}</h4>
                 <form action="{{ route('lists.items.store', $list->id) }}" method="POST">
                     @csrf
                     <div class="mb-4">
-                        <label for="name" class="block text-sm font-medium text-white">{{ __('Item Name') }}</label> <!-- White text -->
+                        <label for="name" class="block text-sm font-medium text-white">{{ __('Item Name') }}</label>
                         <input type="text" name="name" id="name" required
-                               class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black"> <!-- Black text inside input -->
+                               class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black">
                     </div>
                     <div class="mb-4">
-                        <label for="amount" class="block text-sm font-medium text-white">{{ __('Amount') }}</label> <!-- White text -->
+                        <label for="amount" class="block text-sm font-medium text-white">{{ __('Amount') }}</label>
                         <input type="number" name="amount" id="amount" required min="1"
-                               class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black"> <!-- Black text inside input -->
+                               class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black">
                     </div>
                     <div class="mb-4">
-                        <label for="price_per_item" class="block text-sm font-medium text-white">{{ __('Price Per Item') }}</label> <!-- White text -->
+                        <label for="price_per_item" class="block text-sm font-medium text-white">{{ __('Price Per Item') }}</label>
                         <input type="number" name="price_per_item" id="price_per_item" step="0.01" min="0"
-                               class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black"> <!-- Black text inside input -->
+                               class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black">
                     </div>
                     <div class="flex justify-end">
                         <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2">
@@ -132,7 +160,6 @@
         </div>
     </div>
 
-
     <script>
         const openModalBtn = document.getElementById('open-modal-btn');
         const closeModalBtns = document.querySelectorAll('#close-modal-btn, #close-modal-btn-bottom');
@@ -147,9 +174,7 @@
                 modal.classList.add('hidden');
             });
         });
-    </script>
 
-    <script>
         document.getElementById('set-reminder-btn').addEventListener('click', function () {
             document.getElementById('reminder-form-container').classList.remove('hidden');
             this.classList.add('hidden');
@@ -160,6 +185,4 @@
             document.getElementById('set-reminder-btn').classList.remove('hidden');
         });
     </script>
-
-
 </x-app-layout>

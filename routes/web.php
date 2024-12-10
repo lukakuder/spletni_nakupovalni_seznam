@@ -39,6 +39,8 @@ Route::middleware('auth')->group(function () {
     Route::get('groups/create', [GroupController::class, 'create'])->name('groups.create');
     Route::post('groups/store', [GroupController::class, 'store'])->name('groups.store');
     Route::get('/groups/{id}/lists', [GroupController::class, 'getGroupShoppingLists']);
+
+    Route::post('/list-items/{listItem}/update-purchased', [ListController::class, 'updatePurchasedQuantity'])->name('list-items.update-purchased');
 });
 
 require __DIR__.'/auth.php';
