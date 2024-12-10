@@ -21,9 +21,10 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('lists', [ProfileController::class, 'myLists'])->name('user.lists');
+    Route::get('/lists', [ListController::class, 'getLists']);
 
-    Route::get('/lists/create', [ListController::class, 'create'])->name('lists.create');
-    Route::post('/lists/store', [ListController::class, 'store'])->name('lists.store');
+    Route::get('lists/create', [ListController::class, 'create'])->name('lists.create');
+    Route::post('lists/store', [ListController::class, 'store'])->name('lists.store');
 
     Route::get('lists/{id}', [ListController::class, 'show'])->name('lists.show');
     Route::post('lists/{id}/items', [ListController::class, 'storeItem'])->name('lists.items.store');
@@ -37,6 +38,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('groups/create', [GroupController::class, 'create'])->name('groups.create');
     Route::post('groups/store', [GroupController::class, 'store'])->name('groups.store');
+    Route::get('/groups/{id}/lists', [GroupController::class, 'getGroupShoppingLists']);
 });
 
 require __DIR__.'/auth.php';
