@@ -6,6 +6,7 @@ use App\Models\ShoppingList;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Response;
 
 class ListController extends Controller
 {
@@ -95,4 +96,27 @@ class ListController extends Controller
 
         return redirect()->route('user.lists')->with('success', 'List created successfully!');
     }
+
+    public function export($id)
+    {
+        $list = ShoppingList::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->with('items')
+            ->firstOrFail();
+
+        $fileContent = "Shopping List: " . $list->name . "\n\n";
+        $fileContent .= "Items:\n";
+
+        foreach ($list->items as $item) {
+            $fileContent .= "- " . $item->name . " (Amount: " . $item->amount . ", Price Per Item: " . number_format($item->price_per_item, 2) . ")\n";
+        }
+
+        $fileName = 'shopping_list_' . $list->id . '.txt';
+
+        return Response::make($fileContent, 200, [
+            'Content-Type' => 'text/plain',
+            'Content-Disposition' => "attachment; filename=\"$fileName\"",
+        ]);
+    }
+
 }
