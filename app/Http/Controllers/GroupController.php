@@ -95,6 +95,14 @@ class GroupController extends Controller
         return redirect()->route('user.groups')->with('success', 'Group updated successfully!');
     }
 
+    public function getGroupShoppingLists($groupId)
+    {
+        $group = Group::findOrFail($groupId);
+
+        // function from the model
+        return $group->getShoppingLists();
+    }
+
     /**
      * Delete the specified group from the database.
      *

@@ -30,6 +30,19 @@ class ListController extends Controller
         return redirect()->route('lists.show', $id)->with('success', 'Item added successfully!');
     }
 
+    public function getLists()
+    {
+        //get all lists and its products
+        $lists = ListItem::with('products')->get();
+
+        //turn into a collection and return answer
+        return $lists->map(function ($list) {
+            return [
+                'list' => $list,
+                'products' => $list->products->items(),
+            ];
+        });
+    }
 
     /**
      * Display the specified shopping list.
