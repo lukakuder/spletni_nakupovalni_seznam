@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ListController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -20,7 +21,6 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('lists', [ProfileController::class, 'myLists'])->name('user.lists');
-
     Route::get('/lists', [ListController::class, 'getLists']);
 
     Route::get('lists/create', [ListController::class, 'create'])->name('lists.create');
@@ -31,11 +31,12 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/lists/{id}/export', [ListController::class, 'export'])->name('lists.export');
     Route::patch('/lists/{id}/reminder', [ListController::class, 'updateReminder'])->name('lists.updateReminder');
-});
-Route::middleware('auth')->group(function () {
+
     Route::get('groups', [ProfileController::class, 'myGroups'])->name('user.groups');
     Route::get('groups/create', [ListController::class, 'create'])->name('groups.create');
+  
     Route::post('groups/store', [ListController::class, 'store'])->name('groups.store');
     Route::get('/groups/{id}/lists', [GroupController::class, 'getGroupShoppingLists']);
 });
+
 require __DIR__.'/auth.php';
