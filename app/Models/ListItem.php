@@ -21,7 +21,7 @@ class ListItem extends Model
         'name',
         'amount',
         'price_per_item',
-        'total_price',
+        'total_price'
     ];
 
     public function shoppingList()

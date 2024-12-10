@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\ShoppingList;
+use App\Models\ListItem;
+
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -133,6 +135,46 @@ class ListController extends Controller
 
         return redirect()->route('lists.show', $id)
             ->with('success', 'Reminder updated successfully!');
+    }
+
+    public function import(Request $request, $id)
+    {
+        $request->validate([
+            'import_file' => 'required|file|mimes:txt|max:2048', // Validate file type and size
+        ]);
+
+        $file = $request->file('import_file');
+        $content = file_get_contents($file);
+
+        // Split the content by lines
+        $lines = explode("\n", $content);
+
+        foreach ($lines as $line) {
+            // Skip empty lines
+            if (trim($line) === '') {
+                continue;
+            }
+
+            // Parse the line (item,quantity,price)
+            $data = str_getcsv($line);
+
+            // Ensure the correct number of fields
+            if (count($data) !== 3) {
+                continue; // Skip invalid lines
+            }
+
+            // Add item to the shopping list
+            ListItem::create([
+                'shopping_list_id' => $id,
+                'name' => trim($data[0]),
+                'amount' => (int) trim($data[1]),
+                'price_per_item' => (float) trim($data[2]),
+                'total_price' => (int) trim($data[1]) * (float) trim($data[2]),
+            ]);
+        }
+
+        return redirect()->route('lists.show', $id)
+            ->with('success', 'Items imported successfully!');
     }
 
 }

@@ -46,6 +46,37 @@
                     </a>
 
                     <div class="mt-6">
+                        <button id="import-button"
+                                class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
+                            {{ __('Import Items') }}
+                        </button>
+
+                        <div id="import-form-container" class="hidden mt-4">
+                            <form action="{{ route('lists.import', $list->id) }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <label for="import_file" class="block text-sm font-medium text-white">
+                                    {{ __('Upload File (.txt)') }}
+                                </label>
+
+                                <input type="file" id="import_file" name="import_file" accept=".txt"
+                                       class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black bg-white">
+
+                                <div class="flex justify-end mt-4">
+                                    <button type="submit"
+                                            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                        {{ __('Upload') }}
+                                    </button>
+                                    <button type="button" id="close-import-form"
+                                            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2">
+                                        {{ __('Cancel') }}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+
+                    <div class="mt-6">
                         <button id="set-reminder-btn"
                                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                             {{ __('Set Reminder') }}
@@ -158,6 +189,19 @@
         document.getElementById('close-reminder-btn').addEventListener('click', function () {
             document.getElementById('reminder-form-container').classList.add('hidden');
             document.getElementById('set-reminder-btn').classList.remove('hidden');
+        });
+    </script>
+
+
+    <script>
+        document.getElementById('import-button').addEventListener('click', function () {
+            document.getElementById('import-form-container').classList.remove('hidden');
+            this.classList.add('hidden');
+        });
+
+        document.getElementById('close-import-form').addEventListener('click', function () {
+            document.getElementById('import-form-container').classList.add('hidden');
+            document.getElementById('import-button').classList.remove('hidden');
         });
     </script>
 

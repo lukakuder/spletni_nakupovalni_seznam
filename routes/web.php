@@ -24,6 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::get('lists/{id}', [ListController::class, 'show'])->name('lists.show');
     Route::post('lists/{id}/items', [ListController::class, 'storeItem'])->name('lists.items.store');
 
+    Route::post('/lists/{id}/import', [ListController::class, 'import'])->name('lists.import');
     Route::get('/lists/{id}/export', [ListController::class, 'export'])->name('lists.export');
     Route::patch('/lists/{id}/reminder', [ListController::class, 'updateReminder'])->name('lists.updateReminder');
 
