@@ -20,20 +20,20 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('lists', [ProfileController::class, 'myLists'])->name('user.lists');
+    Route::get('/lists', [ProfileController::class, 'myLists'])->name('user.lists');
 
     Route::get('/lists/create', [ListController::class, 'create'])->name('lists.create');
     Route::post('/lists/store', [ListController::class, 'store'])->name('lists.store');
 
-    Route::get('lists/{id}', [ListController::class, 'show'])->name('lists.show');
-    Route::post('lists/{id}/items', [ListController::class, 'storeItem'])->name('lists.items.store');
+    Route::get('/lists/{id}', [ListController::class, 'show'])->name('lists.show');
+    Route::post('/lists/{id}/items', [ListController::class, 'storeItem'])->name('lists.items.store');
 
     Route::get('/lists/{id}/export', [ListController::class, 'export'])->name('lists.export');
     Route::patch('/lists/{id}/reminder', [ListController::class, 'updateReminder'])->name('lists.updateReminder');
 
-    Route::get('groups', [ProfileController::class, 'myGroups'])->name('user.groups');
-    Route::get('groups/create', [GroupController::class, 'create'])->name('groups.create');
-    Route::post('groups/store', [GroupController::class, 'store'])->name('groups.store');
+    Route::get('/groups', [ProfileController::class, 'myGroups'])->name('user.groups');
+    Route::get('/groups/create', [GroupController::class, 'create'])->name('groups.create');
+    Route::post('/groups/store', [GroupController::class, 'store'])->name('groups.store');
 });
 
 require __DIR__.'/auth.php';
