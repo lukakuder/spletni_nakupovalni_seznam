@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Response;
 
 class ListController extends Controller
 {
-
     public function storeItem(Request $request, $id)
     {
         $request->validate([
