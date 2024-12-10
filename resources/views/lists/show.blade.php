@@ -10,7 +10,13 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <h3 class="text-xl font-bold">{{ $list->name }}</h3>
-                    <p class="text-gray-500">{{ $list->description }}</p>
+                    <p class="text-white-500">Description: {{ $list->description }}</p>
+                    @if ($list->reminder_date)
+                        <p class="text-sm text-white-600">
+                            {{ __('Reminder set to: ') }}
+                            <span class="font-bold">{{ $list->reminder_date->format('d.m.Y') }}</span>
+                        </p>
+                    @endif
 
                     <h4 class="text-lg mt-6 font-bold">{{ __('Items') }}</h4>
                     @if ($list->items->isEmpty())
@@ -39,6 +45,53 @@
                         {{ __('Export') }}
                     </a>
 
+                    <div class="mt-6">
+                        <button id="set-reminder-btn"
+                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            {{ __('Set Reminder') }}
+                        </button>
+
+                        <div id="reminder-form-container" class="hidden mt-4">
+                            <form action="{{ route('lists.updateReminder', $list->id) }}" method="POST">
+                                @csrf
+                                @method('PATCH')
+
+                                <label for="reminder_date" class="block text-sm font-medium text-white">
+                                    {{ __('Reminder Date') }}
+                                </label>
+
+                                <input type="date" id="reminder_date" name="reminder_date"
+                                       value="{{ $list->reminder_date ? $list->reminder_date->format('Y-m-d') : '' }}"
+                                       class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black bg-white">
+
+                                <div class="flex justify-end mt-4">
+                                    <button type="submit"
+                                            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                        {{ __('Save Reminder') }}
+                                    </button>
+
+                                    <button type="button" id="close-reminder-btn"
+                                            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2">
+                                        {{ __('Close') }}
+                                    </button>
+                                </div>
+                            </form>
+
+
+                            @if ($list->reminder_date)
+                                <p class="mt-4 text-sm text-white-600">
+                                    {{ __('Reminder set to: ') }}
+                                    <span class="font-bold">{{ $list->reminder_date->format('d.m.Y') }}</span>
+                                </p>
+                            @endif
+                        </div>
+                    </div>
+
+                    @if (session('success'))
+                        <div class="mt-5 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                            {{ session('success') }}
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -95,4 +148,18 @@
             });
         });
     </script>
+
+    <script>
+        document.getElementById('set-reminder-btn').addEventListener('click', function () {
+            document.getElementById('reminder-form-container').classList.remove('hidden');
+            this.classList.add('hidden');
+        });
+
+        document.getElementById('close-reminder-btn').addEventListener('click', function () {
+            document.getElementById('reminder-form-container').classList.add('hidden');
+            document.getElementById('set-reminder-btn').classList.remove('hidden');
+        });
+    </script>
+
+
 </x-app-layout>

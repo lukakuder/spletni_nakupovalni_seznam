@@ -23,7 +23,8 @@ class ShoppingList extends Model
         'group_id',
         'name',
         'description',
-        'belongs_to_a_group'
+        'belongs_to_a_group',
+        'reminder_date'
     ];
 
     /**
@@ -35,6 +36,7 @@ class ShoppingList extends Model
     {
         return [
             'belongs_to_a_group' => 'boolean',
+            'reminder_date' => 'date',
         ];
     }
 

@@ -119,4 +119,20 @@ class ListController extends Controller
         ]);
     }
 
+    public function updateReminder(Request $request, $id)
+    {
+        $request->validate([
+            'reminder_date' => 'nullable|date|after_or_equal:today',
+        ]);
+
+        $list = ShoppingList::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        $list->update(['reminder_date' => $request->reminder_date]);
+
+        return redirect()->route('lists.show', $id)
+            ->with('success', 'Reminder updated successfully!');
+    }
+
 }
