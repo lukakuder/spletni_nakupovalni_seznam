@@ -33,9 +33,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/lists/{id}/reminder', [ListController::class, 'updateReminder'])->name('lists.updateReminder');
 
     Route::get('groups', [ProfileController::class, 'myGroups'])->name('user.groups');
-    Route::get('groups/create', [ListController::class, 'create'])->name('groups.create');
-  
-    Route::post('groups/store', [ListController::class, 'store'])->name('groups.store');
+
+    Route::get('/user/groups', [GroupController::class, 'index'])->name('user.groups');
+
+    Route::get('groups/create', [GroupController::class, 'create'])->name('groups.create');
+    Route::post('groups/store', [GroupController::class, 'store'])->name('groups.store');
     Route::get('/groups/{id}/lists', [GroupController::class, 'getGroupShoppingLists']);
 });
 
