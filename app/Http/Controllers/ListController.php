@@ -33,8 +33,10 @@ class ListController extends Controller
 
     public function getLists()
     {
+        //get all lists and its products
         $lists = ListItem::with('products')->get();
 
+        //turn into a collection and return answer
         return $lists->map(function ($list) {
             return [
                 'list' => $list,
@@ -42,8 +44,6 @@ class ListController extends Controller
             ];
         });
     }
-
-
 
     /**
      * Display the specified shopping list.
