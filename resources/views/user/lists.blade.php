@@ -70,6 +70,12 @@
         </div>
     </div>
 
+    <footer class="py-4 bg-gray-100 dark:bg-gray-900 text-center">
+        <p class="text-xl text-gray-600 dark:text-gray-800 font-semibold">
+            Spletni nakupovalni seznam
+        </p>
+    </footer>
+
     <script>
         document.getElementById('toggle-view-btn').addEventListener('click', function () {
             const cards = document.querySelectorAll('.view-card');
