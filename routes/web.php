@@ -22,6 +22,8 @@ Route::middleware('auth')->group(function () {
     Route::get('lists', [ProfileController::class, 'myLists'])->name('user.lists');
 
     Route::get('lists/{id}', [ListController::class, 'show'])->name('lists.show');
+    Route::post('lists/{id}/items', [ListController::class, 'storeItem'])->name('lists.items.store');
+
 
     Route::get('lists/create', [ListController::class, 'create'])->name('lists.create');
     Route::post('lists/store', [ListController::class, 'store'])->name('lists.store');

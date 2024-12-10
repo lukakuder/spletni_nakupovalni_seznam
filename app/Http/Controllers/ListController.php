@@ -9,6 +9,28 @@ use Illuminate\View\View;
 
 class ListController extends Controller
 {
+
+    public function storeItem(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'amount' => 'required|integer|min:1',
+            'price_per_item' => 'nullable|numeric|min:0',
+        ]);
+
+        $list = ShoppingList::findOrFail($id);
+
+        $list->items()->create([
+            'name' => $request->name,
+            'amount' => $request->amount,
+            'price_per_item' => $request->price_per_item,
+            'total_price' => $request->amount * $request->price_per_item,
+        ]);
+
+        return redirect()->route('lists.show', $id)->with('success', 'Item added successfully!');
+    }
+
+
     /**
      * Display the specified shopping list.
      *
@@ -17,13 +39,14 @@ class ListController extends Controller
      */
     public function show($id)
     {
-        // Find the shopping list by ID and ensure it belongs to the authenticated user
         $list = ShoppingList::where('id', $id)
             ->where('user_id', auth()->id())
-            ->firstOrFail();
+            ->with('items') // Use -> here instead of ::
+            ->findOrFail($id);
 
         return view('lists.show', compact('list'));
     }
+
 
     /**
      * Returns the view to the list creation form

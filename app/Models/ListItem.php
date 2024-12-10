@@ -24,8 +24,8 @@ class ListItem extends Model
         'total_price',
     ];
 
-    protected function shopping_list(): BelongsTo
+    public function shoppingList()
     {
-        return $this->belongsTo(ShoppingList::class);
+        return $this->belongsTo(ShoppingList::class, 'shopping_list_id');
     }
 }

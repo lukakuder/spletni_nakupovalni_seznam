@@ -57,8 +57,8 @@ class ShoppingList extends Model
     /**
      * The items that belong to the shopping list.
      */
-    protected function items(): HasMany
+    public function items()
     {
-        return $this->hasMany(ListItem::class);
+        return $this->hasMany(ListItem::class, 'shopping_list_id');
     }
 }
