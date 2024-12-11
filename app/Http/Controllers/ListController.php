@@ -116,14 +116,18 @@ class ListController extends Controller
             ->with('items')
             ->firstOrFail();
 
-        $fileContent = "Shopping List: " . $list->name . "\n\n";
-        $fileContent .= "Items:\n";
+        $fileContent = "Seznam: " . $list->name . "\n\n";
+        $fileContent .= "Vsebina:\n";
 
         foreach ($list->items as $item) {
-            $fileContent .= "- " . $item->name . " (Amount: " . $item->amount . ", Price Per Item: " . number_format($item->price_per_item, 2) . ")\n";
+            $fileContent .= "- " . $item->name .
+                            " (Količina: " . $item->amount .
+                            ", Cena na kos: " . number_format($item->price_per_item, 2) .
+                            ", Skupna cena:" . number_format($item->price_per_item * $item->amount, 2) .
+                            ")\n";
         }
 
-        $fileName = 'shopping_list_' . $list->id . '.txt';
+        $fileName = 'seznam_' . $list->name . '.txt';
 
         return Response::make($fileContent, 200, [
             'Content-Type' => 'text/plain',
