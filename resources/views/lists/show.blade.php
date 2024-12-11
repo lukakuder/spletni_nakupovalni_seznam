@@ -40,12 +40,12 @@
                         {{ __('Dodaj izdelek') }}
                     </button>
 
-                    <a href="{{ route('lists.export', $list->id) }}"
-                       class="mt-6 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded inline-block text-center">
-                        {{ __('Izvozi') }}
-                    </a>
-
                     <div class="mt-6">
+                        <a href="{{ route('lists.export', $list->id) }}"
+                           class="mt-6 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded inline-block text-center">
+                            {{ __('Izvozi podatke') }}
+                        </a>
+
                         <button id="import-button"
                                 class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
                             {{ __('Naloži podatke') }}
