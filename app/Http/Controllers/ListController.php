@@ -98,6 +98,10 @@ class ListController extends Controller
         $list->name = $request->name;
         $list->description = $request->description;
 
+        if ($request->tags) {
+            $list->syncTags($request->tags);
+        }
+
         // Checks if it should fill the user_id or group_id
         if ($request->belongs_to_a_group) {
             $list->group_id = $request->group_id;

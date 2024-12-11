@@ -50,7 +50,12 @@ class GroupController extends Controller
         $group = new Group();
         $group->name = $request->name;
         $group->description = $request->description;
-        $group->user_id = auth()->id();  // Store the creator as the group owner
+        $group->user_id = auth()->id();
+
+        if ($request->tags) {
+            $group->syncTags($request->tags);
+        }
+
         $group->save();
 
         return redirect()->route('user.groups')->with('success', 'Group created successfully!');

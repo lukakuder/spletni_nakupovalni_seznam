@@ -21,8 +21,6 @@ return new class extends Migration
 
             $table->string('name');
             $table->text('description');
-
-            $table->string('tags')->nullable();
             $table->date('reminder_date')->nullable();
             $table->timestamps();
         });
