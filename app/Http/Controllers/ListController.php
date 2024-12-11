@@ -241,4 +241,22 @@ class ListController extends Controller
             ->with('success', 'Items imported successfully!');
     }
 
+    public function uploadReceipt(Request $request, ShoppingList $list)
+    {
+        // Validacija vhodnih podatkov
+        $request->validate([
+            'receipt_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        // Shrani sliko v 'storage/app/public/receipts'
+        $path = $request->file('receipt_image')->store('receipts', 'public');
+
+        // Posodobi model s potjo slike
+        $list->receipt_image = $path;
+        $list->save();
+
+        // Preusmeri nazaj na prikaz seznama z uspešno sporočilo
+        return redirect()->route('lists.show', $list->id)
+            ->with('success', 'Račun je bil uspešno naložen!');
+    }
 }

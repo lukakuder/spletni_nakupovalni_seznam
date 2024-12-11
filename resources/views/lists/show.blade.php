@@ -118,6 +118,32 @@
                         </div>
                     </div>
 
+                    <div class="mt-6">
+                        <button id="upload-receipt-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            {{ __('Naloži sliko računa') }}
+                        </button>
+
+                        <div id="upload-receipt-form" class="hidden mt-4">
+                            <form action="{{ route('lists.uploadReceipt', $list->id) }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <label for="receipt_image" class="block text-sm font-medium text-white">
+                                    {{ __('Izberite sliko računa (jpeg, png, max: 2MB)') }}
+                                </label>
+                                <input type="file" id="receipt_image" name="receipt_image" accept="image/*"
+                                       class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black bg-white">
+
+                                <div class="flex justify-end mt-4">
+                                    <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                        {{ __('Naloži') }}
+                                    </button>
+                                    <button type="button" id="close-upload-form" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2">
+                                        {{ __('Prekliči') }}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
                     @if (session('success'))
                         <div class="mt-5 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
                             {{ session('success') }}
@@ -217,6 +243,18 @@
         document.getElementById('close-import-form').addEventListener('click', function () {
             document.getElementById('import-form-container').classList.add('hidden');
             document.getElementById('import-button').classList.remove('hidden');
+        });
+    </script>
+
+    <script>
+        document.getElementById('upload-receipt-btn').addEventListener('click', function () {
+            document.getElementById('upload-receipt-form').classList.remove('hidden');
+            this.classList.add('hidden');
+        });
+
+        document.getElementById('close-upload-form').addEventListener('click', function () {
+            document.getElementById('upload-receipt-form').classList.add('hidden');
+            document.getElementById('upload-receipt-btn').classList.remove('hidden');
         });
     </script>
 

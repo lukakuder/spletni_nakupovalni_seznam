@@ -23,7 +23,8 @@ class ShoppingList extends Model
         'name',
         'description',
         'belongs_to_a_group',
-        'reminder_date'
+        'reminder_date',
+        'receipt_image',
     ];
 
     /**
