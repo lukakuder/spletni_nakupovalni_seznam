@@ -48,6 +48,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 
+// Prikaz obrazca za dodajanje članov
+    Route::get('/groups/{group}/add-members', [GroupController::class, 'addMembersForm'])->name('groups.addMembersForm');
+
+// Shranjevanje izbranih članov v skupino
+    Route::post('/groups/{group}/add-members', [GroupController::class, 'addMembers'])->name('groups.addMembers');
 
 });
 

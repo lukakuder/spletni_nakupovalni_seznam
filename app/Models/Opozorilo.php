@@ -8,9 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class Opozorilo extends Model
 {
     use HasFactory;
+    protected $table = 'opozorilas'; // Dodano, če želite eksplicitno določiti ime tabele
 
-    // Nastavite ime tabele, če se razlikuje od privzete oblike
-    protected $table = 'opozorila';
+    protected $fillable = [
+        'user_id',
+        'message',
+        'prebrano'
+    ];
 
-    protected $fillable = ['user_id', 'sporočilo', 'prebrano','cas'];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
