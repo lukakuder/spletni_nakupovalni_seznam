@@ -75,4 +75,9 @@ class ShoppingList extends Model
     {
         return $filters->apply($query);
     }
+
+    public function receipts()
+    {
+        return $this->hasMany(Receipt::class);
+    }
 }
