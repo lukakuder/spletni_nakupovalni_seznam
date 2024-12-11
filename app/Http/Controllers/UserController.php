@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\ListFilters;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -11,7 +12,7 @@ use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
 
 
-class ProfileController extends Controller
+class UserController extends Controller
 {
     /**
      * Display the user's profile form.
@@ -23,18 +24,6 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * Returns the view containing users lists
-     *
-     * @param Request $request
-     * @return View
-     */
-    public function myLists(Request $request): View
-    {
-        return view('user.lists', [
-            'lists' => $request->user()->lists,
-        ]);
-    }
     public function myGroups()
     {
         // Fetch the groups for the authenticated user

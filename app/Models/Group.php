@@ -27,6 +27,13 @@ class Group extends Model
         return $this->users()->get();
     }
     /**
+     * Get all shopping lists for the group.
+     */
+    public function getShoppingLists()
+    {
+        return $this->shoppingLists()->get(); // returns collection of lists
+    }
+    /**
      * The users that belong to the group.
      */
     public function users(): BelongsToMany
