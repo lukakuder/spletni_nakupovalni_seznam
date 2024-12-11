@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\ListFilters;
 use App\Models\ShoppingList;
 use App\Models\ListItem;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Response;
@@ -25,6 +27,21 @@ class ListController extends Controller
                 'products' => $list->products->items(),
             ];
         });
+    }
+
+    /**
+     * Returns the view containing users lists
+     *
+     * @param ListFilters $filters
+     * @return View
+     */
+    public function getUsersLists(ListFilters $filters): View
+    {
+        $lists = Auth::user()->lists()->filter($filters)->get();
+
+        return view('user.lists', [
+            'lists' => $lists,
+        ]);
     }
 
     /**
