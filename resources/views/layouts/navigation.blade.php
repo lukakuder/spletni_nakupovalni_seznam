@@ -13,7 +13,7 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Osnovna stran') }}
+                        {{ __('Domov') }}
                     </x-nav-link>
                 </div>
 
@@ -30,6 +30,13 @@
                         {{ __('Moje skupine') }}
                     </x-nav-link>
                 </div>
+                <!-- Moje Seznami -->
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('opozorila.index')" :active="request()->routeIs('opozorila.index')">
+                        {{ __('Opozorila') }}
+                    </x-nav-link>
+                </div>
+
             </div>
 
             <!-- Settings Dropdown -->
