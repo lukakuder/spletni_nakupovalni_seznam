@@ -100,7 +100,7 @@ class GroupController extends Controller
         $group = Group::findOrFail($groupId);
 
         // function from the model
-        return $group->getShoppingLists();
+        return $group->lists()->get();
     }
 
     /**
