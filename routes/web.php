@@ -21,7 +21,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/lists', [ProfileController::class, 'myLists'])->name('user.lists');
-    Route::get('/lists', [ListController::class, 'getLists']);
+    //Route::get('/lists', [ListController::class, 'getLists']);
 
     Route::get('lists/create', [ListController::class, 'create'])->name('lists.create');
     Route::post('lists/store', [ListController::class, 'store'])->name('lists.store');
