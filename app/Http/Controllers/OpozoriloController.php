@@ -34,14 +34,12 @@ class OpozoriloController extends Controller
             $opozorilo->prebrano = true;
             $opozorilo->save();
 
-            // Sproži dogodek
-            event(new OpozoriloOznacenoKotPrebrano(Auth::user()));
-
-            return redirect()->back()->with('success', 'Opozorilo označeno kot prebrano.');
+            return response()->json(['status' => 'success']);
         }
 
-        return redirect()->back()->with('error', 'Opozorilo ni bilo najdeno.');
+        return response()->json(['status' => 'error', 'message' => 'Opozorilo ni bilo najdeno.']);
     }
+
 
     public function steviloNeprebranih()
     {

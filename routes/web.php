@@ -46,9 +46,12 @@ Route::middleware('auth')->group(function () {
 
     // Označevanje opozorila kot prebranega
     Route::middleware('auth')->post('/opozorila/oznaci-prebrano', [OpozoriloController::class, 'oznaciPrebrano'])->name('opozorila.oznaciPrebrano');
+    Route::post('/opozorila/oznaci-prebrano', [OpozoriloController::class, 'oznaciPrebrano'])->name('opozorila.oznaciPrebrano');
+
 
     // Pridobitev števila neprebranih opozoril
     Route::middleware('auth')->get('/opozorila/stevilo-neprebranih', [OpozoriloController::class, 'steviloNeprebranih'])->name('opozorila.steviloNeprebranih');
+    Route::get('/opozorila/stevilo-neprebranih', [OpozoriloController::class, 'steviloNeprebranih'])->name('opozorila.steviloNeprebranih');
 
     Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 
@@ -57,6 +60,10 @@ Route::middleware('auth')->group(function () {
 
     // Shranjevanje izbranih članov v skupino
     Route::post('/groups/{group}/add-members', [GroupController::class, 'addMembers'])->name('groups.addMembers');
+
+
+
+
 });
 
 require __DIR__ . '/auth.php';
