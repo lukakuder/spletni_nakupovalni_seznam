@@ -8,6 +8,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Models\User;
+use App\Models\Opozorilo;
+use Illuminate\Support\Facades\Auth;
 
 class GroupController extends Controller
 {
@@ -40,35 +42,44 @@ class GroupController extends Controller
      * @param Request $request
      * @return RedirectResponse
      */
+
     public function store(Request $request): RedirectResponse
     {
-        // Validate the group data
+        // Validacija podatkov
         $request->validate([
-            'name' => 'required|string|max:255|unique:groups,name', // Dodano: preverjanje unikatnosti imena
+            'name' => 'required|string|max:255|unique:groups,name',
             'description' => 'nullable|string',
         ]);
 
-        // Preverite, ali skupina z istim imenom že obstaja
+        // Preveri, ali skupina z istim imenom že obstaja
         $existingGroup = Group::where('name', $request->name)->first();
 
         if ($existingGroup) {
             return redirect()->back()->with('error', 'Skupina z tem imenom že obstaja.');
         }
 
-        // Create and save the new group
+        // Kreiraj skupino
         $group = new Group();
         $group->name = $request->name;
         $group->description = $request->description;
-        $group->save(); // Save the group first to get the ID
+        $group->save();
 
-        // Attach the authenticated user as a member of the group
-        $group->users()->attach(auth()->user()->id); // Attach the current user as a member
+        // Poveži prijavljenega uporabnika kot člana skupine
+        $group->users()->attach(auth()->user()->id);
 
-        // Send notification to the user who created the group
+        // Dodaj opozorilo za trenutnega uporabnika
+        Opozorilo::create([
+            'user_id' => Auth::id(),
+            'message' => 'Skupina "' . $group->name . '" je bila uspešno ustvarjena.',
+            'prebrano' => false,
+        ]);
+
+        // Pošlji obvestilo z uporabo Notification sistema (če želiš)
         auth()->user()->notify(new GroupCreatedNotification($group));
 
         return redirect()->route('user.groups')->with('success', 'Skupina uspešno ustvarjena!');
     }
+
 
     public function addMembersForm($groupId)
     {
