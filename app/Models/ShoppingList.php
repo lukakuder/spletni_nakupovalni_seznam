@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 
 class ShoppingList extends Model
@@ -62,5 +61,17 @@ class ShoppingList extends Model
     public function items()
     {
         return $this->hasMany(ListItem::class, 'shopping_list_id');
+    }
+
+    /**
+     * ScopeFilter for filtering
+     *
+     * @param $query
+     * @param $filters
+     * @return mixed
+     */
+    public function scopeFilter($query, $filters)
+    {
+        return $filters->apply($query);
     }
 }

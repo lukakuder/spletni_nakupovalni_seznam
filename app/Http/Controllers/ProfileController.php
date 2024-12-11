@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\ListFilters;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -29,12 +30,15 @@ class ProfileController extends Controller
      * @param Request $request
      * @return View
      */
-    public function myLists(Request $request): View
+    public function myLists(ListFilters $filters): View
     {
+        $lists = Auth::user()->lists()->filter($filters)->get();
+
         return view('user.lists', [
-            'lists' => $request->user()->lists,
+            'lists' => $lists,
         ]);
     }
+
     public function myGroups()
     {
         // Fetch the groups for the authenticated user

@@ -29,7 +29,7 @@ class GroupController extends Controller
      */
     public function create(): View
     {
-        return view('user.create-group');
+        return view('groups.create');
     }
 
     /**
@@ -93,6 +93,14 @@ class GroupController extends Controller
         $group->save();
 
         return redirect()->route('user.groups')->with('success', 'Group updated successfully!');
+    }
+
+    public function getGroupShoppingLists($groupId)
+    {
+        $group = Group::findOrFail($groupId);
+
+        // function from the model
+        return $group->getShoppingLists();
     }
 
     /**

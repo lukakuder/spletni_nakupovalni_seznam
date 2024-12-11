@@ -7,11 +7,26 @@ use App\Models\ListItem;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Response;
 
 class ListController extends Controller
 {
+    public function getLists()
+    {
+        //get all lists and its products
+        $lists = ListItem::with('products')->get();
+
+        //turn into a collection and return answer
+        return $lists->map(function ($list) {
+            return [
+                'list' => $list,
+                'products' => $list->products->items(),
+            ];
+        });
+    }
+
     /**
      * Display the specified shopping list.
      *
@@ -57,6 +72,9 @@ class ListController extends Controller
             'group_id' => 'nullable|exists:groups,id',
         ]);
 
+        // An example of printing an array to the lists channel
+        Log::channel('lists')->debug(json_encode($request->all()));
+
         // Create the new list
         $list = new ShoppingList();
         $list->name = $request->name;
@@ -73,6 +91,9 @@ class ListController extends Controller
 
         $list->belongs_to_a_group = $request->belongs_to_a_group;
         $list->save();
+
+        // An example of print an informational message
+        Log::channel('lists')->info('A new list has been created!');
 
         return redirect()->route('user.lists')->with('success', 'List created successfully!');
     }

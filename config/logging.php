@@ -52,6 +52,12 @@ return [
 
     'channels' => [
 
+        'lists' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/lists.log'),
+            'level' => 'debug',
+        ],
+
         'stack' => [
             'driver' => 'stack',
             'channels' => explode(',', env('LOG_STACK', 'single')),

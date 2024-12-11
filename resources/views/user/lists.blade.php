@@ -17,11 +17,26 @@
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
                         {{ __('Seznami') }}
                     </h3>
-                    <button
-                        id="toggle-view-btn"
-                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                        {{ __('Preklopi pogled') }}
-                    </button>
+
+                    <div class="flex items-center space-x-4">
+                        <p class="text-l text-gray-800 dark:text-gray-200">
+                            {{ __('Filtriranje:') }}
+                        </p>
+
+                        <form action="{{ route('user.lists') }}" method="GET" class="flex items-center space-x-2">
+                            <!-- Input field for filtering -->
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                class="h-10 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                placeholder="Vnesite ime"
+                                value="{{ request('name') }}"
+                            >
+
+                            <x-primary-button class="h-10 px-4 ml-1 text-sm">Filtriraj</x-primary-button>
+                        </form>
+                    </div>
                 </div>
 
                 <div id="list-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
