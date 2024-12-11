@@ -27,14 +27,17 @@
                             <textarea id="description" name="description" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" required>{{ old('description') }}</textarea>
                         </div>
 
-                        <!-- Optional: Invite Members -->
+                        <!-- Optional: Invite Members
                         <div class="mb-4">
                             <label for="members" class="block text-sm font-medium text-gray-700">Dodaj Člane (Email)</label>
                             <textarea id="members" name="members" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Vnesite email naslove, ločene z vejico.">{{ old('members') }}</textarea>
-                        </div>
+                        </div>v-->
 
                         <!-- Submit Button -->
                         <x-primary-button> Ustvari novo skupino </x-primary-button>
+
+                        A
+
                     </form>
                 </div>
             </div>

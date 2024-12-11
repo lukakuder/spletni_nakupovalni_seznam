@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\GroupCreatedEvent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -46,6 +47,12 @@ class Group extends Model
     protected function lists(): HasMany
     {
         return $this->hasMany(ShoppingList::class);
+    }
+    protected static function booted()
+    {
+        static::created(function ($group) {
+            event(new GroupCreatedEvent($group));
+        });
     }
 }
 
