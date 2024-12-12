@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Receipt extends Model
 {
     use HasFactory;
-
     protected $fillable = ['shopping_list_id', 'name', 'file_path'];
 
     public function list()

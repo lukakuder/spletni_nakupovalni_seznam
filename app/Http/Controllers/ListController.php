@@ -262,12 +262,6 @@ class ListController extends Controller
             ->with('success', 'Račun je bil uspešno naložen!');
     }
 
-//    public function show($id)
-//    {
-//        $list = ShoppingList::with('receipts')->findOrFail($id);
-//        return view('lists.show', compact('list'));
-//    }
-
     public function storeReceipt(Request $request, $listId)
     {
         $request->validate([
