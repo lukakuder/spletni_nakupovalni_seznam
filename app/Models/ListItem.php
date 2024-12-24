@@ -28,4 +28,9 @@ class ListItem extends Model
     {
         return $this->belongsTo(ShoppingList::class, 'shopping_list_id');
     }
+
+    public function purchasedItems()
+    {
+        return $this->hasMany(PurchasedItem::class);
+    }
 }
