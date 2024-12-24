@@ -127,7 +127,7 @@ class ListController extends Controller
     }
 
     /**
-     * Exports the shopping list to a text file
+     * Exports the shopping list to a text file, including already bought items.
      *
      * @param int $id
      * @return \Illuminate\Http\Response
@@ -144,10 +144,12 @@ class ListController extends Controller
 
         foreach ($list->items as $item) {
             $fileContent .= "- " . $item->name .
-                            " (Količina: " . $item->amount .
-                            ", Cena na kos: " . number_format($item->price_per_item, 2) .
-                            ", Skupna cena:" . number_format($item->price_per_item * $item->amount, 2) .
-                            ")\n";
+                " (Količina: " . $item->amount .
+                ", Kupljeno: " . $item->purchased .
+                ", Preostalo: " . ($item->amount - $item->purchased) .
+                ", Cena na kos: " . number_format($item->price_per_item, 2) .
+                ", Skupna cena: " . number_format($item->price_per_item * $item->amount, 2) .
+                ")\n";
         }
 
         $fileName = 'seznam_' . $list->name . '.txt';
@@ -260,6 +262,55 @@ class ListController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Item marked as purchased successfully');
+    }
+
+    /**
+     * Exports a report of who bought what and their total spending.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function export_report(int $id): \Illuminate\Http\Response
+    {
+        $list = ShoppingList::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->with(['items.purchasedItems.user'])
+            ->firstOrFail();
+
+        $fileContent = "Poročilo o nakupih za seznam: " . $list->name . "\n\n";
+        $fileContent .= "Nakupi:\n";
+
+        $spending = [];
+
+        foreach ($list->items as $item) {
+            foreach ($item->purchasedItems as $purchase) {
+                $userName = $purchase->user->name;
+                $quantity = $purchase->quantity;
+                $totalCost = $quantity * $item->price_per_item;
+
+                $fileContent .= "- " . $userName . " kupil " . $quantity .
+                    "x " . $item->name .
+                    " (Cena na kos: " . number_format($item->price_per_item, 2) .
+                    ", Skupna cena: " . number_format($totalCost, 2) . ")\n";
+
+                if (!isset($spending[$userName])) {
+                    $spending[$userName] = 0;
+                }
+                $spending[$userName] += $totalCost;
+            }
+        }
+
+        $fileContent .= "\nSkupni stroški:\n";
+        foreach ($spending as $userName => $totalSpent) {
+            $fileContent .= "- " . $userName . ": " . number_format($totalSpent, 2) . "€\n";
+        }
+
+        $fileName = 'porocilo_' . $list->name . '.txt';
+
+        return Response::make($fileContent, 200, [
+            'Content-Type' => 'text/plain',
+            'Content-Disposition' => "attachment; filename=\"$fileName\"",
+        ]);
     }
 
 }

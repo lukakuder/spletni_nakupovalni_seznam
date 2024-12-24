@@ -50,44 +50,53 @@
                                     </span>
                                 </div>
 
-                                <!-- Quantity Input and Button -->
-                                <form action="{{ route('items.markPurchased', $item->id) }}" method="POST" class="flex items-center space-x-2">
-                                    @csrf
-                                    @method('PATCH')
+                                @if($item->purchased >= $item->amount)
 
-                                    <input type="number"
-                                           name="quantity"
-                                           class="w-12 text-black rounded-md text-center"
-                                           placeholder="0"
-                                           min="1"
-                                           max="{{ $item->amount - $item->purchased }}"
-                                           required
-                                           style="width: 80px; color: black"
-                                    >
+                                @else
+                                    <!-- Quantity Input and Button -->
+                                    <form action="{{ route('items.markPurchased', $item->id) }}" method="POST" class="flex items-center space-x-2">
+                                        @csrf
+                                        @method('PATCH')
 
-                                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                        Kupi
-                                    </button>
-                                </form>
+                                        <input type="number"
+                                               name="quantity"
+                                               class="w-12 text-black rounded-md text-center"
+                                               placeholder="0"
+                                               min="1"
+                                               max="{{ $item->amount - $item->purchased }}"
+                                               required
+                                               style="width: 80px; color: black"
+                                        >
+
+                                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                            Kupi
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
                         @endforeach
                     @endif
 
-                    <button id="open-modal-btn"
-                            class="mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        {{ __('Dodaj izdelek') }}
-                    </button>
-
                     <div class="mt-6">
+                        <button id="open-modal-btn"
+                                class="mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            {{ __('Dodaj izdelek') }}
+                        </button>
+
+                        <button id="import-button"
+                                class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
+                            {{ __('Uvozi podatke') }}
+                        </button>
+
                         <a href="{{ route('lists.export', $list->id) }}"
                            class="mt-6 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded inline-block text-center">
                             {{ __('Izvozi podatke') }}
                         </a>
 
-                        <button id="import-button"
-                                class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
-                            {{ __('Naloži podatke') }}
-                        </button>
+                        <a href="{{ route('lists.exportReport', $list->id) }}"
+                           class="mt-6 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded inline-block text-center">
+                            {{ __('Izvozi poročilo seznama') }}
+                        </a>
 
                         <div id="import-form-container" class="hidden mt-4">
                             <form action="{{ route('lists.import', $list->id) }}" method="POST" enctype="multipart/form-data">
