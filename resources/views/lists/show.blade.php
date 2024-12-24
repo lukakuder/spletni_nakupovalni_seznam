@@ -22,17 +22,55 @@
                     @if ($list->items->isEmpty())
                         <p class="text-gray-500">{{ __('Ni dodanih izdelkov.') }}</p>
                     @else
-                        <ul>
-                            @foreach ($list->items as $item)
-                                <li>
-                                    {{ $item->name }} - {{ $item->amount }}
-                                    @if ($item->price_per_item)
-                                        x {{ number_format($item->price_per_item, 2) }} € =
-                                        {{ number_format($item->total_price, 2) }} €
-                                    @endif
-                                </li>
-                            @endforeach
-                        </ul>
+                        @foreach ($list->items as $item)
+                            <div class="flex items-center justify-between mb-6">
+                                <!-- Item Name and Progress -->
+                                <div class="flex items-center justify-start" style="width: 60%">
+                                    <span class="text-white font-medium"
+                                          style="min-width: 100px">{{ $item->name }}</span>
+
+                                    <!-- Purchased Text and Quantity -->
+                                    <span class="text-sm text-gray-400 whitespace-nowrap"
+                                          style="min-width: 80px">
+                                        Kupljeno: {{ $item->purchased }}/{{ $item->amount }}
+                                    </span>
+
+                                    <!-- Progress Bar -->
+                                    <div class="w-full bg-gray-300 rounded-full h-4"
+                                         style="width: 100px; margin-left: 15px; border: 1px solid gray">
+                                        <div style="width: {{ $item->amount > 0 ? ($item->purchased / $item->amount) * 100 : 0 }}%; background-color: #22c55e;"
+                                             class="h-4 rounded-full">
+                                        </div>
+                                    </div>
+
+                                    <!-- Percentage -->
+                                    <span class="text-sm text-gray-400"
+                                        style="margin-left: 15px">
+                                        {{ round(($item->purchased / $item->amount) * 100, 2) }}%
+                                    </span>
+                                </div>
+
+                                <!-- Quantity Input and Button -->
+                                <form action="{{ route('items.markPurchased', $item->id) }}" method="POST" class="flex items-center space-x-2">
+                                    @csrf
+                                    @method('PATCH')
+
+                                    <input type="number"
+                                           name="quantity"
+                                           class="w-12 text-black rounded-md text-center"
+                                           placeholder="0"
+                                           min="1"
+                                           max="{{ $item->amount - $item->purchased }}"
+                                           required
+                                           style="width: 80px; color: black"
+                                    >
+
+                                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                        Kupi
+                                    </button>
+                                </form>
+                            </div>
+                        @endforeach
                     @endif
 
                     <button id="open-modal-btn"

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PurchasedItem;
 use App\Models\ShoppingList;
 use App\Models\ListItem;
 
@@ -102,6 +103,7 @@ class ListController extends Controller
      * takes and validates item from Add Item form and stores it in the database
      *
      * @param Request $request, int $id
+     * @param int $id
      * @return RedirectResponse
      */
     public function storeItem(Request $request, int $id): RedirectResponse
@@ -160,6 +162,7 @@ class ListController extends Controller
      * Updates the reminder date of the shopping list
      *
      * @param Request $request, int $id
+     * @param int $id
      * @return RedirectResponse
      */
     public function updateReminder(Request $request, int $id): RedirectResponse
@@ -182,6 +185,7 @@ class ListController extends Controller
      * imports items from a text file to the shopping list
      *
      * @param Request $request, int $id
+     * @param int $id
      * @return RedirectResponse
      */
     public function import(Request $request, int $id): RedirectResponse
@@ -222,6 +226,40 @@ class ListController extends Controller
 
         return redirect()->route('lists.show', $id)
             ->with('success', 'Items imported successfully!');
+    }
+
+
+    /**
+     * Mark an item as purchased
+     * @param Request $request
+     * @param $id
+     * @return RedirectResponse
+    */
+    public function markAsPurchased(Request $request, $id): RedirectResponse
+    {
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $item = ListItem::findOrFail($id);
+
+        // validate requested quantity
+        if ($item->amount < $item->purchased + $request->quantity) {
+            return redirect()->back()->with('error', 'Quantity exceeds available amount');
+        }
+
+        // update purchased count
+        $item->purchased += $request->quantity;
+        $item->save();
+
+        // record in the purchased_items table
+        PurchasedItem::create([
+            'list_item_id' => $item->id,
+            'user_id' => auth()->id(),
+            'quantity' => $request->quantity,
+        ]);
+
+        return redirect()->back()->with('success', 'Item marked as purchased successfully');
     }
 
 }

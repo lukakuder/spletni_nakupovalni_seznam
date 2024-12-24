@@ -32,6 +32,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/lists/{id}/import', [ListController::class, 'import'])->name('lists.import');
     Route::get('/lists/{id}/export', [ListController::class, 'export'])->name('lists.export');
     Route::patch('/lists/{id}/reminder', [ListController::class, 'updateReminder'])->name('lists.updateReminder');
+    Route::patch('/items/{id}/mark-purchased', [ListController::class, 'markAsPurchased'])->name('items.markPurchased');
+
 
     Route::get('/groups', [ProfileController::class, 'myGroups'])->name('user.groups');
     Route::get('/groups/create', [GroupController::class, 'create'])->name('groups.create');
