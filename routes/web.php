@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ListController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OpozoriloController;
@@ -25,6 +26,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/user/lists', [ListController::class, 'getUsersLists'])->name('user.lists');
     Route::get('/user/groups', [GroupController::class, 'index'])->name('user.groups');
 
+    Route::get('/tag/{tag}', [TagController::class, 'index'])->name('tag.show');
+
     Route::get('/lists', [ListController::class, 'getLists'])->name('lists');
     Route::get('/lists/create', [ListController::class, 'create'])->name('lists.create');
     Route::post('/lists/store', [ListController::class, 'store'])->name('lists.store');
@@ -37,14 +40,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/lists/{id}/export', [ListController::class, 'export'])->name('lists.export');
     Route::get('/lists/{id}/export-report', [ListController::class, 'export_report'])->name('lists.exportReport');
 
-
     Route::patch('/lists/{id}/reminder', [ListController::class, 'updateReminder'])->name('lists.updateReminder');
     Route::patch('/items/{id}/mark-purchased', [ListController::class, 'markAsPurchased'])->name('items.markPurchased');
 
-
-    Route::get('groups', [UserController::class, 'myGroups'])->name('user.groups');
-    Route::get('groups/create', [GroupController::class, 'create'])->name('groups.create');
-    Route::post('groups/store', [GroupController::class, 'store'])->name('groups.store');
+    Route::get('/groups', [UserController::class, 'myGroups'])->name('user.groups');
+    Route::get('/groups/create', [GroupController::class, 'create'])->name('groups.create');
+    Route::post('/groups/store', [GroupController::class, 'store'])->name('groups.store');
+    Route::get('/groups/{id}', [GroupController::class, 'show'])->name('groups.show');
     Route::get('/groups/{id}/lists', [GroupController::class, 'getGroupShoppingLists']);
 
     Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -53,7 +55,6 @@ Route::middleware('auth')->group(function () {
     // Označevanje opozorila kot prebranega
     Route::middleware('auth')->post('/opozorila/oznaci-prebrano', [OpozoriloController::class, 'oznaciPrebrano'])->name('opozorila.oznaciPrebrano');
     Route::post('/opozorila/oznaci-prebrano', [OpozoriloController::class, 'oznaciPrebrano'])->name('opozorila.oznaciPrebrano');
-
 
     // Pridobitev števila neprebranih opozoril
     Route::middleware('auth')->get('/opozorila/stevilo-neprebranih', [OpozoriloController::class, 'steviloNeprebranih'])->name('opozorila.steviloNeprebranih');
