@@ -10,6 +10,7 @@ use Illuminate\View\View;
 use App\Models\User;
 use App\Models\Opozorilo;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Tags\Tag;
 
 class GroupController extends Controller
 {
@@ -33,7 +34,24 @@ class GroupController extends Controller
      */
     public function create(): View
     {
-        return view('groups.create');
+        return view('groups.create', [
+            'tags' => Tag::all(),
+        ]);
+    }
+
+    /**
+     * Displays the view of the specified group.
+     *
+     * @param $id
+     * @return View
+     */
+    public function show($id): View
+    {
+        $group = Group::findOrFail($id);
+
+        return view('groups.show', [
+            'group' => $group,
+        ]);
     }
 
     /**
@@ -62,13 +80,12 @@ class GroupController extends Controller
         $group = new Group();
         $group->name = $request->name;
         $group->description = $request->description;
-        $group->user_id = auth()->id();
+        //$group->user_id = auth()->id();
+        $group->save();
 
         if ($request->tags) {
             $group->syncTags($request->tags);
         }
-
-        $group->save();
 
         // Poveži prijavljenega uporabnika kot člana skupine
         $group->users()->attach(auth()->user()->id);

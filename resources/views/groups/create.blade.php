@@ -33,14 +33,34 @@
                             <textarea id="members" name="members" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Vnesite email naslove, ločene z vejico.">{{ old('members') }}</textarea>
                         </div>v-->
 
+                        <!-- Tags Selection -->
+                        <div class="form-group mb-4">
+                            <label for="select2Multiple" class="block text-sm font-medium text-gray-700">Izberi oznake</label>
+                            <select class="select2-multiple form-control mt-1 block w-full p-2 border border-gray-300 rounded-md" name="tags[]" multiple="multiple" id="select2Multiple">
+                                @foreach($tags as $tag)
+                                    <option value="{{ $tag->slug }}">{{ $tag->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         <!-- Submit Button -->
                         <x-primary-button> Ustvari novo skupino </x-primary-button>
-
-                        A
-
                     </form>
                 </div>
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Select2 Multiple
+            $('.select2-multiple').select2({
+                placeholder: "Select",
+                allowClear: true
+            });
+
+        });
+
+    </script>
 </x-app-layout>
