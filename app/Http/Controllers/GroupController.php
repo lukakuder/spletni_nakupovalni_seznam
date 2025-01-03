@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Group;
+use App\Notifications\GroupCreatedNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use App\Models\User;
+use App\Models\Opozorilo;
+use Illuminate\Support\Facades\Auth;
 
 class GroupController extends Controller
 {
@@ -38,15 +42,23 @@ class GroupController extends Controller
      * @param Request $request
      * @return RedirectResponse
      */
+
     public function store(Request $request): RedirectResponse
     {
-        // Validate the group data
+        // Validacija podatkov
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:groups,name',
             'description' => 'nullable|string',
         ]);
 
-        // Create and save the new group
+        // Preveri, ali skupina z istim imenom že obstaja
+        $existingGroup = Group::where('name', $request->name)->first();
+
+        if ($existingGroup) {
+            return redirect()->back()->with('error', 'Skupina z tem imenom že obstaja.');
+        }
+
+        // Kreiraj skupino
         $group = new Group();
         $group->name = $request->name;
         $group->description = $request->description;
@@ -58,9 +70,45 @@ class GroupController extends Controller
 
         $group->save();
 
-        return redirect()->route('user.groups')->with('success', 'Group created successfully!');
+        // Poveži prijavljenega uporabnika kot člana skupine
+        $group->users()->attach(auth()->user()->id);
+
+        // Dodaj opozorilo za trenutnega uporabnika
+        Opozorilo::create([
+            'user_id' => Auth::id(),
+            'message' => 'Skupina "' . $group->name . '" je bila uspešno ustvarjena.',
+            'prebrano' => false,
+        ]);
+
+        // Pošlji obvestilo z uporabo Notification sistema (če želiš)
+        auth()->user()->notify(new GroupCreatedNotification($group));
+
+        return redirect()->route('user.groups')->with('success', 'Skupina uspešno ustvarjena!');
     }
 
+
+    public function addMembersForm($groupId)
+    {
+        $group = Group::findOrFail($groupId);
+        $users = User::all(); // Pridobite vse uporabnike, ki jih lahko dodate v skupino
+
+        return view('groups.add-members', compact('group', 'users'));
+    }
+    public function addMembers(Request $request, $groupId)
+    {
+        $group = Group::findOrFail($groupId);
+
+        // Preverite, ali so uporabniki izbrani
+        $request->validate([
+            'users' => 'required|array',
+            'users.*' => 'exists:users,id',
+        ]);
+
+        // Dodajte izbrane uporabnike v skupino
+        $group->users()->attach($request->users);
+
+        return redirect()->route('groups.show', $group->id)->with('success', 'Člani so bili uspešno dodani!');
+    }
     /**
      * Show the form for editing the specified group.
      *
@@ -71,6 +119,7 @@ class GroupController extends Controller
     {
         // Ensure the user owns the group (or has permission to edit)
         $this->authorize('update', $group);
+
 
         return view('user.edit-group', compact('group'));
     }
@@ -95,6 +144,7 @@ class GroupController extends Controller
 
         $group->name = $request->name;
         $group->description = $request->description;
+        $group->updated_at = $request->updated_at;
         $group->save();
 
         return redirect()->route('user.groups')->with('success', 'Group updated successfully!');

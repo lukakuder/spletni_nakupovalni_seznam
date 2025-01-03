@@ -2,35 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\ListFilters;
+use App\Models\PurchasedItem;
 use App\Models\ShoppingList;
+use App\Models\ListItem;
+
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Response;
 
 class ListController extends Controller
 {
-    public function storeItem(Request $request, $id)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'amount' => 'required|integer|min:1',
-            'price_per_item' => 'nullable|numeric|min:0',
-        ]);
-
-        $list = ShoppingList::findOrFail($id);
-
-        $list->items()->create([
-            'name' => $request->name,
-            'amount' => $request->amount,
-            'price_per_item' => $request->price_per_item,
-            'total_price' => $request->amount * $request->price_per_item,
-        ]);
-
-        return redirect()->route('lists.show', $id)->with('success', 'Item added successfully!');
-    }
-
     public function getLists()
     {
         //get all lists and its products
@@ -43,6 +28,21 @@ class ListController extends Controller
                 'products' => $list->products->items(),
             ];
         });
+    }
+
+    /**
+     * Returns the view containing users lists
+     *
+     * @param ListFilters $filters
+     * @return View
+     */
+    public function getUsersLists(ListFilters $filters): View
+    {
+        $lists = Auth::user()->lists()->filter($filters)->get();
+
+        return view('user.lists', [
+            'lists' => $lists,
+        ]);
     }
 
     /**
@@ -120,21 +120,60 @@ class ListController extends Controller
         return redirect()->route('user.lists')->with('success', 'List created successfully!');
     }
 
-    public function export($id)
+    /**
+     * takes and validates item from Add Item form and stores it in the database
+     *
+     * @param Request $request, int $id
+     * @param int $id
+     * @return RedirectResponse
+     */
+    public function storeItem(Request $request, int $id): RedirectResponse
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'amount' => 'required|integer|min:1',
+            'price_per_item' => 'nullable|numeric|min:0',
+        ]);
+
+        $list = ShoppingList::findOrFail($id);
+
+        $list->items()->create([
+            'name' => $request->name,
+            'amount' => $request->amount,
+            'price_per_item' => $request->price_per_item,
+            'total_price' => $request->amount * $request->price_per_item,
+        ]);
+
+        return redirect()->route('lists.show', $id)->with('success', 'Item added successfully!');
+    }
+
+    /**
+     * Exports the shopping list to a text file, including already bought items.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function export(int $id): \Illuminate\Http\Response
     {
         $list = ShoppingList::where('id', $id)
             ->where('user_id', auth()->id())
             ->with('items')
             ->firstOrFail();
 
-        $fileContent = "Shopping List: " . $list->name . "\n\n";
-        $fileContent .= "Items:\n";
+        $fileContent = "Seznam: " . $list->name . "\n\n";
+        $fileContent .= "Vsebina:\n";
 
         foreach ($list->items as $item) {
-            $fileContent .= "- " . $item->name . " (Amount: " . $item->amount . ", Price Per Item: " . number_format($item->price_per_item, 2) . ")\n";
+            $fileContent .= "- " . $item->name .
+                " (Količina: " . $item->amount .
+                ", Kupljeno: " . $item->purchased .
+                ", Preostalo: " . ($item->amount - $item->purchased) .
+                ", Cena na kos: " . number_format($item->price_per_item, 2) .
+                ", Skupna cena: " . number_format($item->price_per_item * $item->amount, 2) .
+                ")\n";
         }
 
-        $fileName = 'shopping_list_' . $list->id . '.txt';
+        $fileName = 'seznam_' . $list->name . '.txt';
 
         return Response::make($fileContent, 200, [
             'Content-Type' => 'text/plain',
@@ -142,7 +181,14 @@ class ListController extends Controller
         ]);
     }
 
-    public function updateReminder(Request $request, $id)
+    /**
+     * Updates the reminder date of the shopping list
+     *
+     * @param Request $request, int $id
+     * @param int $id
+     * @return RedirectResponse
+     */
+    public function updateReminder(Request $request, int $id): RedirectResponse
     {
         $request->validate([
             'reminder_date' => 'nullable|date|after_or_equal:today',
@@ -156,6 +202,154 @@ class ListController extends Controller
 
         return redirect()->route('lists.show', $id)
             ->with('success', 'Reminder updated successfully!');
+    }
+
+    /**
+     * imports items from a text file to the shopping list
+     *
+     * @param Request $request, int $id
+     * @param int $id
+     * @return RedirectResponse
+     */
+    public function import(Request $request, int $id): RedirectResponse
+    {
+        $request->validate([
+            'import_file' => 'required|file|mimes:txt|max:2048', // Validate file type and size
+        ]);
+
+        $file = $request->file('import_file');
+        $content = file_get_contents($file);
+
+        // Split the content by lines
+        $lines = explode("\n", $content);
+
+        foreach ($lines as $line) {
+            // Skip empty lines
+            if (trim($line) === '') {
+                continue;
+            }
+
+            // Parse the line (item,quantity,price)
+            $data = str_getcsv($line);
+
+            // Ensure the correct number of fields
+            if (count($data) !== 3) {
+                continue; // Skip invalid lines
+            }
+
+            // Add item to the shopping list
+            ListItem::create([
+                'shopping_list_id' => $id,
+                'name' => trim($data[0]),
+                'amount' => (int) trim($data[1]),
+                'price_per_item' => (float) trim($data[2]),
+                'total_price' => (int) trim($data[1]) * (float) trim($data[2]),
+            ]);
+        }
+
+        return redirect()->route('lists.show', $id)
+            ->with('success', 'Items imported successfully!');
+    }
+
+    public function uploadReceipt(Request $request, ShoppingList $list)
+    {
+        // Validacija vhodnih podatkov
+        $request->validate([
+            'receipt_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        // Shrani sliko v 'storage/app/public/receipts'
+        $path = $request->file('receipt_image')->store('receipts', 'public');
+
+        // Posodobi model s potjo slike
+        $list->receipt_image = $path;
+        $list->save();
+
+        // Preusmeri nazaj na prikaz seznama z uspešno sporočilo
+        return redirect()->route('lists.show', $list->id)
+            ->with('success', 'Račun je bil uspešno naložen!');
+    }
+
+    /**
+     * Mark an item as purchased
+     * @param Request $request
+     * @param $id
+     * @return RedirectResponse
+    */
+    public function markAsPurchased(Request $request, $id): RedirectResponse
+    {
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $item = ListItem::findOrFail($id);
+
+        // validate requested quantity
+        if ($item->amount < $item->purchased + $request->quantity) {
+            return redirect()->back()->with('error', 'Quantity exceeds available amount');
+        }
+
+        // update purchased count
+        $item->purchased += $request->quantity;
+        $item->save();
+
+        // record in the purchased_items table
+        PurchasedItem::create([
+            'list_item_id' => $item->id,
+            'user_id' => auth()->id(),
+            'quantity' => $request->quantity,
+        ]);
+
+        return redirect()->back()->with('success', 'Item marked as purchased successfully');
+    }
+
+    /**
+     * Exports a report of who bought what and their total spending.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function export_report(int $id): \Illuminate\Http\Response
+    {
+        $list = ShoppingList::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->with(['items.purchasedItems.user'])
+            ->firstOrFail();
+
+        $fileContent = "Poročilo o nakupih za seznam: " . $list->name . "\n\n";
+        $fileContent .= "Nakupi:\n";
+
+        $spending = [];
+
+        foreach ($list->items as $item) {
+            foreach ($item->purchasedItems as $purchase) {
+                $userName = $purchase->user->name;
+                $quantity = $purchase->quantity;
+                $totalCost = $quantity * $item->price_per_item;
+
+                $fileContent .= "- " . $userName . " kupil " . $quantity .
+                    "x " . $item->name .
+                    " (Cena na kos: " . number_format($item->price_per_item, 2) .
+                    ", Skupna cena: " . number_format($totalCost, 2) . ")\n";
+
+                if (!isset($spending[$userName])) {
+                    $spending[$userName] = 0;
+                }
+                $spending[$userName] += $totalCost;
+            }
+        }
+
+        $fileContent .= "\nSkupni stroški:\n";
+        foreach ($spending as $userName => $totalSpent) {
+            $fileContent .= "- " . $userName . ": " . number_format($totalSpent, 2) . "€\n";
+        }
+
+        $fileName = 'porocilo_' . $list->name . '.txt';
+
+        return Response::make($fileContent, 200, [
+            'Content-Type' => 'text/plain',
+            'Content-Disposition' => "attachment; filename=\"$fileName\"",
+        ]);
     }
 
 }

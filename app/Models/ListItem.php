@@ -21,11 +21,16 @@ class ListItem extends Model
         'name',
         'amount',
         'price_per_item',
-        'total_price',
+        'total_price'
     ];
 
     public function shoppingList()
     {
         return $this->belongsTo(ShoppingList::class, 'shopping_list_id');
+    }
+
+    public function purchasedItems()
+    {
+        return $this->hasMany(PurchasedItem::class);
     }
 }

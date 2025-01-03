@@ -12,7 +12,7 @@ use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
 
 
-class ProfileController extends Controller
+class UserController extends Controller
 {
     /**
      * Display the user's profile form.
@@ -21,21 +21,6 @@ class ProfileController extends Controller
     {
         return view('profile.edit', [
             'user' => $request->user(),
-        ]);
-    }
-
-    /**
-     * Returns the view containing users lists
-     *
-     * @param Request $request
-     * @return View
-     */
-    public function myLists(ListFilters $filters): View
-    {
-        $lists = Auth::user()->lists()->filter($filters)->get();
-
-        return view('user.lists', [
-            'lists' => $lists,
         ]);
     }
 
