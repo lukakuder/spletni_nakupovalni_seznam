@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Tags\HasTags;
 
 class ShoppingList extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasTags;
 
     /**
      * The attributes that are mass assignable.

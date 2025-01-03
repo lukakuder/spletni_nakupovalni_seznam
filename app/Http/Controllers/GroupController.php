@@ -62,6 +62,12 @@ class GroupController extends Controller
         $group = new Group();
         $group->name = $request->name;
         $group->description = $request->description;
+        $group->user_id = auth()->id();
+
+        if ($request->tags) {
+            $group->syncTags($request->tags);
+        }
+
         $group->save();
 
         // Poveži prijavljenega uporabnika kot člana skupine
