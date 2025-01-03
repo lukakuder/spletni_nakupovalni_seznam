@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Response;
+use Spatie\Tags\Tag;
 
 class ListController extends Controller
 {
@@ -72,6 +73,7 @@ class ListController extends Controller
     {
         return view('lists.create', [
             'belongs_to_a_group' => $request->input('belongs_to_a_group', 0),
+            'tags' => Tag::all()
         ]);
     }
 
@@ -98,10 +100,6 @@ class ListController extends Controller
         $list->name = $request->name;
         $list->description = $request->description;
 
-        if ($request->tags) {
-            $list->syncTags($request->tags);
-        }
-
         // Checks if it should fill the user_id or group_id
         if ($request->belongs_to_a_group) {
             $list->group_id = $request->group_id;
@@ -113,6 +111,10 @@ class ListController extends Controller
 
         $list->belongs_to_a_group = $request->belongs_to_a_group;
         $list->save();
+
+        if ($request->tags) {
+            $list->syncTags($request->tags);
+        }
 
         // An example of print an informational message
         Log::channel('lists')->info('A new list has been created!');
