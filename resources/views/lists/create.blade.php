@@ -31,15 +31,17 @@
                         <input type="hidden" id="belongs_to_a_group" name="belongs_to_a_group" value="{{ $belongs_to_a_group }}">
 
                         @if ($belongs_to_a_group)
-                            <div class="mb-4">
-                                <label for="group_id" class="block text-sm font-medium text-gray-700">Izberi Skupino</label>
-                                <select id="group_id" name="group_id" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" required>
-                                    @foreach($groups as $group)
-                                        <option value="{{ $group->id }}">{{ $group->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                            <input type="hidden" id="group_id" name="group_id" value="{{ $group_id }}">
                         @endif
+
+                        <div class="form-group mb-4">
+                            <label for="select2Multiple" class="block text-sm font-medium text-gray-700">Izberi oznake</label>
+                            <select class="select2-multiple form-control mt-1 block w-full p-2 border border-gray-300 rounded-md" name="tags[]" multiple="multiple" id="select2Multiple">
+                                @foreach($tags as $tag)
+                                    <option value="{{ $tag->slug }}">{{ $tag->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
                         <!-- Submit Button -->
                         <x-primary-button> Ustvari seznam </x-primary-button>
@@ -48,4 +50,17 @@
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Select2 Multiple
+            $('.select2-multiple').select2({
+                placeholder: "Select",
+                allowClear: true
+            });
+
+        });
+
+    </script>
 </x-app-layout>
