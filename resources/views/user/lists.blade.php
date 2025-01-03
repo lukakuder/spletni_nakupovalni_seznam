@@ -23,7 +23,7 @@
                             {{ __('Filtriranje:') }}
                         </p>
 
-                        <form action="{{ route('user.lists') }}" method="GET" class="flex items-center space-x-2">
+                        <form action="{{ route('user.lists') }}" method="GET" class="flex items-center space-x-2 ml-1">
                             <!-- Input field for filtering -->
                             <input
                                 type="text"
@@ -47,9 +47,11 @@
                                     {{ $list->name }}
                                 </h4>
                             </a>
+
                             <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
                                 {{ $list->description }}
                             </p>
+
                             <div class="mt-4 text-sm text-gray-500 dark:text-gray-400">
                                 <p>{{ __('Ustvarjeno:') }} {{ $list->created_at->format('d.m.Y') }}</p>
                                 @if ($list->belongs_to_a_group)
@@ -57,6 +59,25 @@
                                 @else
                                     <p>{{ __('Ne pripada nobeni skupini') }}</p>
                                 @endif
+                            </div>
+
+                            <div class="text-sm text-gray-500 dark:text-gray-400">
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="inline-flex items-center px-2.5 py-1.5">
+                                        <p>{{ __('Oznake:') }}</p>
+                                    </span>
+                                    @if($list->tags && count($list->tags) > 0)
+                                        @foreach($list->tags as $tag)
+                                            <a href="{{ route('user.lists', $tag->id) }}" class="inline-flex items-center px-2.5 py-1.5 hover:bg-gray-300 focus:bg-gray-300 hover:text-gray-500 bg-gray-100 text-s text-gray-500 tracking-normal transition-colors duration-200 ease-in-out">
+                                                {{ $tag->name }}
+                                            </a>
+                                        @endforeach
+                                    @else
+                                        <span class="inline-flex items-center px-2.5 py-1.5">
+                                            <p>{{ __('Ta seznam nima oznak') }}</p>
+                                        </span>
+                                    @endif
+                                </div>
                             </div>
                         </div>
 

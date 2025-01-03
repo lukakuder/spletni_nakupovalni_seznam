@@ -11,6 +11,9 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <h3 class="text-xl font-bold">Ime: {{ $list->name }}</h3>
                     <p class="text-white-500">Opis: {{ $list->description }}</p>
+                    <x-tags.tags-display :tags="$list->tags" />
+
+
                     @if ($list->reminder_date)
                         <p class="text-sm text-white-600">
                             {{ __('Opomnik dne: ') }}

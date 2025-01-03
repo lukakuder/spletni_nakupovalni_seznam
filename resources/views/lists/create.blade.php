@@ -35,9 +35,8 @@
                         @endif
 
                         <div class="form-group mb-4">
-                            <label for="select2Multiple">Izberi oznake</label>
-                            <select class="select2-multiple form-control" name="tags[]" multiple="multiple"
-                                    id="select2Multiple">
+                            <label for="select2Multiple" class="block text-sm font-medium text-gray-700">Izberi oznake</label>
+                            <select class="select2-multiple form-control mt-1 block w-full p-2 border border-gray-300 rounded-md" name="tags[]" multiple="multiple" id="select2Multiple">
                                 @foreach($tags as $tag)
                                     <option value="{{ $tag->slug }}">{{ $tag->name }}</option>
                                 @endforeach
