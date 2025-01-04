@@ -1,13 +1,22 @@
 <x-app-layout>
+    <x-slot name="header">
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                {{ __('Skupina ' . $group->name) }}
+            </h2>
+            <x-primary-button href="{{ route('lists.create', ['belongs_to_a_group' => 1, 'group_id' => $group->id]) }}">
+                {{ __('Ustvari Seznam') }}
+            </x-primary-button>
+
+            <x-primary-button href="{{ route('groups.addMembersForm', ['group' => $group->id]) }}">
+                {{ __('Dodaj Člane') }}
+            </x-primary-button>
+        </div>
+    </x-slot>
+
     <div class="py-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                        {{ __('Skupina ' . $group->name) }}
-                    </h3>
-                </div>
-
                 <div class="mb-6">
                     <h4 class="text-md font-semibold text-gray-800 dark:text-gray-200">
                         {{ __('Člani skupine:') }}

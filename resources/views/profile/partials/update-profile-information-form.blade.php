@@ -22,7 +22,7 @@
             <x-input-label for="profile_picture" :value="__('Profilna slika')" />
             <div class="flex items-center mt-1">
                 <!-- Display user's profile picture or a default avatar if none exists -->
-                <img src="{{ $user->profile_picture_url ?? asset('storage/profile_pictures/default-avatar.png') }}" alt="Profile Picture" class="h-16 w-16 rounded-full object-cover">
+                <img src="{{ $user->profile_picture_url ?? asset('/storage/profile_pictures/default-avatar.png') }}" alt="Profile Picture" class="h-16 w-16 rounded-full object-cover">
 
                 <!-- File input for profile picture -->
                 <input type="file" id="profile_picture" name="profile_picture" class="ml-4 block w-full text-sm text-gray-600 dark:text-gray-400 border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 focus:ring-opacity-50">

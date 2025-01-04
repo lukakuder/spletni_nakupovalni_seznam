@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/lists/{id}/import', [ListController::class, 'import'])->name('lists.import');
     Route::get('/lists/{id}/export', [ListController::class, 'export'])->name('lists.export');
     Route::get('/lists/{id}/export-report', [ListController::class, 'export_report'])->name('lists.exportReport');
+    Route::get('/lists/{id}/divide', [ListController::class, 'divide'])->name('lists.divide');
 
     Route::patch('/lists/{id}/reminder', [ListController::class, 'updateReminder'])->name('lists.updateReminder');
     Route::patch('/items/{id}/mark-purchased', [ListController::class, 'markAsPurchased'])->name('items.markPurchased');
@@ -49,7 +50,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/groups/{id}', [GroupController::class, 'show'])->name('groups.show');
     Route::get('/groups/{id}/lists', [GroupController::class, 'getGroupShoppingLists']);
 
-    Route::get('/', [HomeController::class, 'index'])->name('home');
+    // TODO: Kramar tole ne more met kr / route ker pokvari nas homepage
+    //Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::middleware('auth')->get('/opozorila', [OpozoriloController::class, 'index'])->name('opozorila.index');
 
     // Označevanje opozorila kot prebranega
@@ -67,10 +69,6 @@ Route::middleware('auth')->group(function () {
 
     // Shranjevanje izbranih članov v skupino
     Route::post('/groups/{group}/add-members', [GroupController::class, 'addMembers'])->name('groups.addMembers');
-
-
-
-
 });
 
 require __DIR__ . '/auth.php';

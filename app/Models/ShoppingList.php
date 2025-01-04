@@ -44,7 +44,7 @@ class ShoppingList extends Model
     /**
      * The user that belong to the shopping list.
      */
-    protected function user(): BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
@@ -52,7 +52,7 @@ class ShoppingList extends Model
     /**
      * The group that belong to the shopping list.
      */
-    protected function group(): BelongsTo
+    public function group(): BelongsTo
     {
         return $this->belongsTo(Group::class, 'group_id');
     }

@@ -17,6 +17,7 @@ return new class extends Migration
 
             $table->string('name');
             $table->unsignedSmallInteger('amount');
+            $table->integer('purchased')->default(0);
             $table->decimal('price_per_item');
             $table->decimal('total_price');
             $table->timestamps();
