@@ -38,7 +38,6 @@
                     @else
                         <p class="ml-4">{{ __('Ni povezanih skupin.') }}</p>
                     @endif
-
                 </div>
             </div>
         </div>
