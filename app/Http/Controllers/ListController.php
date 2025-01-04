@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Filters\ListFilters;
+use App\Models\Group;
 use App\Models\PurchasedItem;
 use App\Models\ShoppingList;
 use App\Models\ListItem;
@@ -360,17 +361,41 @@ class ListController extends Controller
      * Divides the amount to be paid between the lists users
      *
      * @param int $id
-     * @return RedirectResponse
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application
      */
-    public function divide(int $id): RedirectResponse
+    public function divide(int $id): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application
     {
         $list = ShoppingList::where('id', $id)
             ->with(['items.purchasedItems.user'])
             ->firstOrFail();
 
-        dd($list);
+        $group = Group::findOrFail($list->group_id);
 
-        return redirect()->back()->with('success', 'List has been divided successfully');
+        $divided = $group->users->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'total_owed' => 0.00,
+            ];
+        })->toArray();
+
+        foreach ($list->items as $item) {
+            foreach ($item->purchasedItems as $purchase) {
+                $cost = $purchase->quantity * (float)$item->price_per_item;
+
+                foreach ($divided as $i => $user) {
+                    if ($user['id'] === $purchase->user_id) {
+                        $divided[$i]['total_owed'] += $cost;
+                        break;
+                    }
+                }
+            }
+        }
+
+        foreach ($divided as $i => $user) {
+            $divided[$i]['total_owed'] = number_format($user['total_owed'] / count($divided), 2);
+        }
+
+        return view('lists.show', compact('list', 'divided'));
     }
-
 }

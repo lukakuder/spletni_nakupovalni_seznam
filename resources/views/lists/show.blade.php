@@ -132,6 +132,16 @@
                         </div>
                     </div>
 
+                    <div class="mt-6">
+                        @if($divided)
+                            @foreach($divided as $user)
+                                @if($user['total_owed'] > 0)
+                                    <p class="mt-4 text-sm text-gray-900">
+                                        {{ __('Uporabnik ' . $user['name'] . ' mora dobiti: ' . $user['total_owed']) }}
+                                    </p>@endif
+                            @endforeach
+                        @endif
+                    </div>
 
                     <div class="mt-6">
                         <button id="set-reminder-btn"

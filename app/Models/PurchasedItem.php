@@ -11,6 +11,10 @@ class PurchasedItem extends Model
 
     protected $fillable = ['list_item_id', 'user_id', 'quantity'];
 
+    protected $casts = [
+        'price_per_item' => 'float',
+    ];
+
     public function listItem()
     {
         return $this->belongsTo(ListItem::class);
