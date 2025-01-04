@@ -40,7 +40,7 @@
 
                                     <!-- Progress Bar -->
                                     <div class="w-full bg-gray-300 rounded-full h-4"
-                                         style="width: 100px; margin-left: 15px; border: 1px solid gray">
+                                         style="width: 100px; margin-left: 15px; border: 1px solid">
                                         <div style="width: {{ $item->amount > 0 ? ($item->purchased / $item->amount) * 100 : 0 }}%; background-color: #22c55e;"
                                              class="h-4 rounded-full">
                                         </div>
@@ -71,7 +71,7 @@
                                                style="width: 80px; color: black"
                                         >
 
-                                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-gray-900 font-bold py-2 px-4 rounded">
                                             Kupi
                                         </button>
                                     </form>
@@ -82,42 +82,49 @@
 
                     <div class="mt-6">
                         <button id="open-modal-btn"
-                                class="mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                class="mt-6 bg-blue-500 hover:bg-blue-700 text-gray-900 font-bold py-2 px-4 rounded">
                             {{ __('Dodaj izdelek') }}
                         </button>
 
                         <button id="import-button"
-                                class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
+                                class="bg-purple-500 hover:bg-purple-700 text-gray-900 font-bold py-2 px-4 rounded">
                             {{ __('Uvozi podatke') }}
                         </button>
 
                         <a href="{{ route('lists.export', $list->id) }}"
-                           class="mt-6 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded inline-block text-center">
+                           class="mt-6 bg-red-500 hover:bg-red-700 text-gray-900 font-bold py-2 px-4 rounded inline-block text-center">
                             {{ __('Izvozi podatke') }}
                         </a>
 
                         <a href="{{ route('lists.exportReport', $list->id) }}"
-                           class="mt-6 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded inline-block text-center">
+                           class="mt-6 bg-red-500 hover:bg-red-700 text-gray-900 font-bold py-2 px-4 rounded inline-block text-center">
                             {{ __('Izvozi poročilo seznama') }}
                         </a>
+
+                        @if($list->group()->exists())
+                            <a href="{{ route('lists.divide', $list->id) }}"
+                               class="mt-6 bg-red-500 hover:bg-red-700 text-gray-900 font-bold py-2 px-4 rounded inline-block text-center">
+                                {{ __('Razdeli seznam') }}
+                            </a>
+                        @endif
 
                         <div id="import-form-container" class="hidden mt-4">
                             <form action="{{ route('lists.import', $list->id) }}" method="POST" enctype="multipart/form-data">
                                 @csrf
-                                <label for="import_file" class="block text-sm font-medium text-white">
+                                <label for="import_file" class="block text-sm font-medium text-gray-900">
                                     {{ __('Naloži datoteko (.txt)') }}
                                 </label>
 
                                 <input type="file" id="import_file" name="import_file" accept=".txt"
-                                       class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black bg-white">
+                                       class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white">
 
                                 <div class="flex justify-end mt-4">
                                     <button type="submit"
-                                            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                            class="bg-green-500 hover:bg-green-700 text-gray-900 font-bold py-2 px-4 rounded">
                                         {{ __('Naloži') }}
                                     </button>
                                     <button type="button" id="close-import-form"
-                                            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2">
+                                            class="bg-gray-500 hover:bg-gray-700 text-gray-900 font-bold py-2 px-4 rounded ml-2">
                                         {{ __('Prekliči') }}
                                     </button>
                                 </div>
@@ -128,7 +135,7 @@
 
                     <div class="mt-6">
                         <button id="set-reminder-btn"
-                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                class="bg-blue-500 hover:bg-blue-700 text-gray-900 font-bold py-2 px-4 rounded">
                             {{ __('Nastavi opomnik') }}
                         </button>
 
@@ -137,22 +144,22 @@
                                 @csrf
                                 @method('PATCH')
 
-                                <label for="reminder_date" class="block text-sm font-medium text-white">
+                                <label for="reminder_date" class="block text-sm font-medium text-gray-900">
                                     {{ __('Datum opomnika') }}
                                 </label>
 
                                 <input type="date" id="reminder_date" name="reminder_date"
                                        value="{{ $list->reminder_date ? $list->reminder_date->format('Y-m-d') : '' }}"
-                                       class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black bg-white">
+                                       class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white">
 
                                 <div class="flex justify-end mt-4">
                                     <button type="submit"
-                                            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                            class="bg-green-500 hover:bg-green-700 text-gray-900 font-bold py-2 px-4 rounded">
                                         {{ __('Shrani') }}
                                     </button>
 
                                     <button type="button" id="close-reminder-btn"
-                                            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2">
+                                            class="bg-gray-500 hover:bg-gray-700 text-gray-900 font-bold py-2 px-4 rounded ml-2">
                                         {{ __('Zapri') }}
                                     </button>
                                 </div>
@@ -160,7 +167,7 @@
 
 
                             @if ($list->reminder_date)
-                                <p class="mt-4 text-sm text-white-600">
+                                <p class="mt-4 text-sm text-gray-900">
                                     {{ __('Datuma opomnika: ') }}
                                     <span class="font-bold">{{ $list->reminder_date->format('d.m.Y') }}</span>
                                 </p>
@@ -169,24 +176,24 @@
                     </div>
 
                     <div class="mt-6">
-                        <button id="upload-receipt-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <button id="upload-receipt-btn" class="bg-blue-500 hover:bg-blue-700 text-gray-900 font-bold py-2 px-4 rounded">
                             {{ __('Naloži sliko računa') }}
                         </button>
 
                         <div id="upload-receipt-form" class="hidden mt-4">
                             <form action="{{ route('lists.uploadReceipt', $list->id) }}" method="POST" enctype="multipart/form-data">
                                 @csrf
-                                <label for="receipt_image" class="block text-sm font-medium text-white">
+                                <label for="receipt_image" class="block text-sm font-medium text-gray-900">
                                     {{ __('Izberite sliko računa (jpeg, png, max: 2MB)') }}
                                 </label>
                                 <input type="file" id="receipt_image" name="receipt_image" accept="image/*"
-                                       class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black bg-white">
+                                       class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white">
 
                                 <div class="flex justify-end mt-4">
-                                    <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                    <button type="submit" class="bg-green-500 hover:bg-green-700 text-gray-900 font-bold py-2 px-4 rounded">
                                         {{ __('Naloži') }}
                                     </button>
-                                    <button type="button" id="close-upload-form" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2">
+                                    <button type="button" id="close-upload-form" class="bg-gray-500 hover:bg-gray-700 text-gray-900 font-bold py-2 px-4 rounded ml-2">
                                         {{ __('Prekliči') }}
                                     </button>
                                 </div>
@@ -207,30 +214,30 @@
     <div id="modal" class="fixed z-10 inset-0 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen">
             <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-lg p-6 border border-gray-300">
-                <h4 class="text-lg font-bold mb-4 text-white">{{ __('Dodaj izdelek') }}</h4> <!-- White text -->
+                <h4 class="text-lg font-bold mb-4 text-gray-900">{{ __('Dodaj izdelek') }}</h4> <!-- White text -->
                 <form action="{{ route('lists.items.store', $list->id) }}" method="POST">
                     @csrf
                     <div class="mb-4">
-                        <label for="name" class="block text-sm font-medium text-white">{{ __('Izdelek') }}</label> <!-- White text -->
+                        <label for="name" class="block text-sm font-medium text-gray-900">{{ __('Izdelek') }}</label> <!-- White text -->
                         <input type="text" name="name" id="name" required
                                class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black"> <!-- Black text inside input -->
                     </div>
                     <div class="mb-4">
-                        <label for="amount" class="block text-sm font-medium text-white">{{ __('Količina') }}</label> <!-- White text -->
+                        <label for="amount" class="block text-sm font-medium text-gray-900">{{ __('Količina') }}</label> <!-- White text -->
                         <input type="number" name="amount" id="amount" required min="1"
                                class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black"> <!-- Black text inside input -->
                     </div>
                     <div class="mb-4">
-                        <label for="price_per_item" class="block text-sm font-medium text-white">{{ __('Cena na kos') }}</label> <!-- White text -->
+                        <label for="price_per_item" class="block text-sm font-medium text-gray-900">{{ __('Cena na kos') }}</label> <!-- White text -->
                         <input type="number" name="price_per_item" id="price_per_item" step="0.01" min="0"
                                class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black"> <!-- Black text inside input -->
                     </div>
                     <div class="flex justify-end">
-                        <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2">
+                        <button type="submit" class="bg-green-500 hover:bg-green-700 text-gray-900 font-bold py-2 px-4 rounded mr-2">
                             {{ __('Shrani') }}
                         </button>
                         <button type="button" id="close-modal-btn-bottom"
-                                class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                                class="bg-gray-500 hover:bg-gray-700 text-gray-900 font-bold py-2 px-4 rounded">
                             {{ __('Prekliči') }}
                         </button>
                     </div>

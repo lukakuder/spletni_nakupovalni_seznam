@@ -15,7 +15,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
-            GroupSeeder::class,
+            //Pri tem lahk pride do napake ker more username bit unique
+            //GroupSeeder::class,
             TagSeeder::class,
         ]);
     }

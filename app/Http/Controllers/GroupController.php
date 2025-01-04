@@ -103,13 +103,12 @@ class GroupController extends Controller
         return redirect()->route('user.groups')->with('success', 'Skupina uspešno ustvarjena!');
     }
 
-
     public function addMembersForm($groupId)
     {
         $group = Group::findOrFail($groupId);
         $users = User::all(); // Pridobite vse uporabnike, ki jih lahko dodate v skupino
 
-        return view('groups.add-members', compact('group', 'users'));
+        return view('groups.add-member', compact('group', 'users'));
     }
     public function addMembers(Request $request, $groupId)
     {

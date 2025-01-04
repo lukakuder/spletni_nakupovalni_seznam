@@ -16,12 +16,12 @@ return new class extends Migration
             $table->unsignedBigInteger('list_item_id');
             $table->unsignedBigInteger('user_id');
             $table->integer('quantity');
+            $table->boolean('has_been_divided')->default(false);
             $table->timestamps();
 
             $table->foreign('list_item_id')->references('id')->on('list_items')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
-
     }
 
     /**

@@ -55,7 +55,7 @@ class ListController extends Controller
     public function show($id)
     {
         $list = ShoppingList::where('id', $id)
-            ->where('user_id', auth()->id())
+            //->where('user_id', auth()->id())
             ->with('items') // Use -> here instead of ::
             ->findOrFail($id);
 
@@ -73,6 +73,7 @@ class ListController extends Controller
     {
         return view('lists.create', [
             'belongs_to_a_group' => $request->input('belongs_to_a_group', 0),
+            'group_id' => $request->input('amp;group_id') ?? $request->input('group_id'),
             'tags' => Tag::all()
         ]);
     }
@@ -273,7 +274,8 @@ class ListController extends Controller
     }
 
     /**
-     * Mark an item as purchased
+     * Marks an item as purchased
+     *
      * @param Request $request
      * @param $id
      * @return RedirectResponse
@@ -352,6 +354,23 @@ class ListController extends Controller
             'Content-Type' => 'text/plain',
             'Content-Disposition' => "attachment; filename=\"$fileName\"",
         ]);
+    }
+
+    /**
+     * Divides the amount to be paid between the lists users
+     *
+     * @param int $id
+     * @return RedirectResponse
+     */
+    public function divide(int $id): RedirectResponse
+    {
+        $list = ShoppingList::where('id', $id)
+            ->with(['items.purchasedItems.user'])
+            ->firstOrFail();
+
+        dd($list);
+
+        return redirect()->back()->with('success', 'List has been divided successfully');
     }
 
 }

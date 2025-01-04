@@ -30,9 +30,7 @@
                         <!-- Group Selection (only if the list belongs to a group) -->
                         <input type="hidden" id="belongs_to_a_group" name="belongs_to_a_group" value="{{ $belongs_to_a_group }}">
 
-                        @if ($belongs_to_a_group)
-                            <input type="hidden" id="group_id" name="group_id" value="{{ $group_id }}">
-                        @endif
+                        <input type="hidden" id="group_id" name="group_id" value="{{ $group_id }}">
 
                         <div class="form-group mb-4">
                             <label for="select2Multiple" class="block text-sm font-medium text-gray-700">Izberi oznake</label>
