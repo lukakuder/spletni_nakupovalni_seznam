@@ -8,6 +8,8 @@ use App\Models\PurchasedItem;
 use App\Models\ShoppingList;
 use App\Models\ListItem;
 
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -361,9 +363,9 @@ class ListController extends Controller
      * Divides the amount to be paid between the lists users
      *
      * @param int $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application
+     * @return View
      */
-    public function divide(int $id): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application
+    public function divide(int $id): View
     {
         $list = ShoppingList::where('id', $id)
             ->with(['items.purchasedItems.user'])
