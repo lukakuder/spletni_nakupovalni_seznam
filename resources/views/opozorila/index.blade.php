@@ -8,22 +8,22 @@
                     @if($opozorila->isEmpty())
                         <p class="text-gray-500">Nimate novih opozoril.</p>
                     @else
-                        <table class="min-w-full border-collapse border border-gray-700">
+                        <table>
                             <thead>
-                            <tr class="bg-gray-700 text-white">
-                                <th class="p-2 border border-gray-600">#</th>
-                                <th class="p-2 border border-gray-600">Sporočilo</th>
-                                <th class="p-2 border border-gray-600">Prebrano</th>
-                                <th class="p-2 border border-gray-600">Označi kot prebrano</th>
+                            <tr>
+                                <th>Datum</th>
+                                <th>Sporočilo</th>
+                                <th>Prebrano</th>
+                                <th>akciski gumb</th>
                             </tr>
                             </thead>
                             <tbody>
                             @foreach($opozorila as $opozorilo)
-                                <tr id="opozorilo-{{ $opozorilo->id }}" class="hover:bg-gray-700">
-                                    <td class="p-2 border border-gray-600">{{ $opozorilo->id }}</td>
-                                    <td class="p-2 border border-gray-600">{{ $opozorilo->message }}</td>
-                                    <td class="p-2 border border-gray-600">{{ $opozorilo->prebrano ? 'Da' : 'Ne' }}</td>
-                                    <td class="p-2 border border-gray-600">
+                                <tr id="opozorilo-{{ $opozorilo->id }}">
+                                    <td>{{ $opozorilo->created_at }}</td>
+                                    <td>{{ $opozorilo->message }}</td>
+                                    <td>{{ $opozorilo->prebrano ? 'Da' : 'Ne' }}</td>
+                                    <td>
                                         @if(!$opozorilo->prebrano)
                                             <button class="btn btn-success btn-sm oznaci-prebrano bg-green-500 text-white py-1 px-2 rounded" data-id="{{ $opozorilo->id }}">
                                                 Označi kot prebrano
@@ -32,6 +32,9 @@
                                     </td>
                                 </tr>
                             @endforeach
+
+
+
                             </tbody>
                         </table>
                     @endif

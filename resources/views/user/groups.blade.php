@@ -21,7 +21,7 @@
                     @else
                         <ul>
                             @foreach($groups as $group)
-                                <li>{{ $group->name }}</li> <!-- Replace `name` with the actual field you want to display -->
+                                <x-groups.group-card :group="$group" />
                             @endforeach
                         </ul>
                     @endif

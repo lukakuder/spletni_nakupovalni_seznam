@@ -13,14 +13,19 @@ return new class extends Migration
     {
         Schema::create('opozorilas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')
+                ->nullable()
+                ->constrained()
+                ->onDelete('cascade'); // Če uporabnik izbriše svoj račun, se opozorila izbrišejo
+            $table->foreignId('group_id')
+                ->nullable()
+                ->constrained('groups') // Povezava s tabelo groups
+                ->onDelete('cascade'); // Če se skupina izbriše, se opozorila izbrišejo
             $table->string('message');
             $table->boolean('prebrano')->default(false);
             $table->timestamps();
         });
     }
-
-
 
     /**
      * Reverse the migrations.

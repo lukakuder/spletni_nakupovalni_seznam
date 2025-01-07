@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OpozoriloController;
 use App\Http\Controllers\HomeController;
 
+Route::get('/groups', [GroupController::class, 'index'])->name('groups.index');
 Route::get('/', function () {
     return view('welcome');
 });
