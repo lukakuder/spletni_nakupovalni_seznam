@@ -8,13 +8,13 @@
                     @if($opozorila->isEmpty())
                         <p class="text-gray-500">Nimate novih opozoril.</p>
                     @else
-                        <table class="min-w-full border-collapse border border-gray-700">
+                        <table>
                             <thead>
-                            <tr class="bg-gray-700 text-white">
-                                <th class="p-2 border border-gray-600">#</th>
-                                <th class="p-2 border border-gray-600">Sporočilo</th>
-                                <th class="p-2 border border-gray-600">Prebrano</th>
-                                <th class="p-2 border border-gray-600">Označi kot prebrano</th>
+                            <tr>
+                                <th>Datum</th>
+                                <th>Sporočilo</th>
+                                <th>Prebrano</th>
+                                <th>Označi kot prebrano</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -32,6 +32,9 @@
                                     </td>
                                 </tr>
                             @endforeach
+
+
+
                             </tbody>
                         </table>
                     @endif

@@ -11,7 +11,7 @@
                     @endforeach
                 </select>
             </div>
-            <button type="submit" class="btn btn-success mt-3">Dodaj člane</button>
+            <button type="submit" class="btn btn-success mt-3">povabi clana</button>
         </form>
     </div>
 
