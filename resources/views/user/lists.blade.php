@@ -79,6 +79,13 @@
                                     @endif
                                 </div>
                             </div>
+
+                            <!-- Gumb za kopiranje seznama -->
+                            <button
+                                class="copy-list-btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mt-4"
+                                data-id="{{ $list->id }}">
+                                Kopiraj seznam
+                            </button>
                         </div>
 
                         <div class="view-list hidden border-b border-gray-300 py-2">
@@ -129,4 +136,73 @@
             }
         });
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyButtons = document.querySelectorAll('.copy-list-btn');
+
+            copyButtons.forEach(button => {
+                button.addEventListener('click', async function () {
+                    const listId = this.dataset.id;
+                    const button = this;
+
+                    // Onemogoči gumb in prikaži nalaganje
+                    button.disabled = true;
+                    button.innerText = 'Kopiram...';
+
+                    try {
+                        const response = await fetch(`/lists/${listId}/duplicate`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            },
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            alert('Seznam uspešno kopiran.');
+
+                            // Dodaj nov seznam v DOM
+                            const listContainer = document.getElementById('list-container');
+                            const newListHtml = `
+                            <div class="view-card bg-gray-100 dark:bg-gray-900 rounded-lg shadow-md p-4">
+                                <a href="/lists/${data.new_list.id}">
+                                    <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                                        ${data.new_list.name}
+                                    </h4>
+                                </a>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                    ${data.new_list.description || ''}
+                                </p>
+                                <div class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+                                    <p>Ustvarjeno: ${new Date(data.new_list.created_at).toLocaleDateString()}</p>
+                                    <p>${data.new_list.belongs_to_a_group ? 'Pripada skupini' : 'Ne pripada nobeni skupini'}</p>
+                                </div>
+                                <button
+                                    class="copy-list-btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mt-4"
+                                    data-id="${data.new_list.id}">
+                                    Kopiraj seznam
+                                </button>
+                            </div>
+                        `;
+
+                            listContainer.insertAdjacentHTML('afterbegin', newListHtml);
+                        } else {
+                            throw new Error(data.error || 'Prišlo je do napake.');
+                        }
+                    } catch (error) {
+                        alert(error.message);
+                    } finally {
+                        // Ponovno omogoči gumb
+                        button.disabled = false;
+                        button.innerText = 'Kopiraj seznam';
+                    }
+                });
+            });
+        });
+    </script>
+
+
 </x-app-layout>

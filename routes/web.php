@@ -42,6 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/lists/{id}/export', [ListController::class, 'export'])->name('lists.export');
     Route::get('/lists/{id}/export-report', [ListController::class, 'export_report'])->name('lists.exportReport');
     Route::get('/lists/{id}/divide', [ListController::class, 'divide'])->name('lists.divide');
+    Route::post('/lists/{id}/duplicate', [ListController::class, 'duplicate'])->middleware('auth')->name('lists.duplicate');
 
     Route::patch('/lists/{id}/reminder', [ListController::class, 'updateReminder'])->name('lists.updateReminder');
     Route::patch('/items/{id}/mark-purchased', [ListController::class, 'markAsPurchased'])->name('items.markPurchased');
