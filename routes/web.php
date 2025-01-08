@@ -67,9 +67,12 @@ Route::middleware('auth')->group(function () {
 
     // Prikaz obrazca za dodajanje članov
     Route::get('/groups/{group}/add-members', [GroupController::class, 'addMembersForm'])->name('groups.addMembersForm');
-
     // Shranjevanje izbranih članov v skupino
     Route::post('/groups/{group}/add-members', [GroupController::class, 'addMembers'])->name('groups.addMembers');
+    Route::post('/groups/{group}/leave', [GroupController::class, 'leave'])->name('groups.leave');
+    Route::get('/groups', [GroupController::class, 'index'])->name('groups.index');
+    Route::get('/groups/{group}/detailed-show', [GroupController::class, 'detailedShow'])->name('groups.detailedShow');
+
 });
 
 require __DIR__ . '/auth.php';
