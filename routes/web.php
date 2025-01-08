@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ListController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OpozoriloController;
 use App\Http\Controllers\HomeController;
 
+Route::get('/groups', [GroupController::class, 'index'])->name('groups.index');
 Route::get('/', function () {
     return view('welcome');
 });
@@ -25,6 +27,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/user/lists', [ListController::class, 'getUsersLists'])->name('user.lists');
     Route::get('/user/groups', [GroupController::class, 'index'])->name('user.groups');
 
+    Route::get('/tag/{tag}', [TagController::class, 'index'])->name('tag.show');
+
     Route::get('/lists', [ListController::class, 'getLists'])->name('lists');
     Route::get('/lists/create', [ListController::class, 'create'])->name('lists.create');
     Route::post('/lists/store', [ListController::class, 'store'])->name('lists.store');
@@ -36,20 +40,25 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/lists/{id}/import', [ListController::class, 'import'])->name('lists.import');
     Route::get('/lists/{id}/export', [ListController::class, 'export'])->name('lists.export');
-    Route::patch('/lists/{id}/reminder', [ListController::class, 'updateReminder'])->name('lists.updateReminder');
+    Route::get('/lists/{id}/export-report', [ListController::class, 'export_report'])->name('lists.exportReport');
+    Route::get('/lists/{id}/divide', [ListController::class, 'divide'])->name('lists.divide');
 
-    Route::get('groups', [UserController::class, 'myGroups'])->name('user.groups');
-    Route::get('groups/create', [GroupController::class, 'create'])->name('groups.create');
-    Route::post('groups/store', [GroupController::class, 'store'])->name('groups.store');
+    Route::patch('/lists/{id}/reminder', [ListController::class, 'updateReminder'])->name('lists.updateReminder');
+    Route::patch('/items/{id}/mark-purchased', [ListController::class, 'markAsPurchased'])->name('items.markPurchased');
+
+    Route::get('/groups', [UserController::class, 'myGroups'])->name('user.groups');
+    Route::get('/groups/create', [GroupController::class, 'create'])->name('groups.create');
+    Route::post('/groups/store', [GroupController::class, 'store'])->name('groups.store');
+    Route::get('/groups/{id}', [GroupController::class, 'show'])->name('groups.show');
     Route::get('/groups/{id}/lists', [GroupController::class, 'getGroupShoppingLists']);
 
-    Route::get('/', [HomeController::class, 'index'])->name('home');
+    // TODO: Kramar tole ne more met kr / route ker pokvari nas homepage
+    //Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::middleware('auth')->get('/opozorila', [OpozoriloController::class, 'index'])->name('opozorila.index');
 
     // Označevanje opozorila kot prebranega
     Route::middleware('auth')->post('/opozorila/oznaci-prebrano', [OpozoriloController::class, 'oznaciPrebrano'])->name('opozorila.oznaciPrebrano');
     Route::post('/opozorila/oznaci-prebrano', [OpozoriloController::class, 'oznaciPrebrano'])->name('opozorila.oznaciPrebrano');
-
 
     // Pridobitev števila neprebranih opozoril
     Route::middleware('auth')->get('/opozorila/stevilo-neprebranih', [OpozoriloController::class, 'steviloNeprebranih'])->name('opozorila.steviloNeprebranih');
@@ -59,12 +68,11 @@ Route::middleware('auth')->group(function () {
 
     // Prikaz obrazca za dodajanje članov
     Route::get('/groups/{group}/add-members', [GroupController::class, 'addMembersForm'])->name('groups.addMembersForm');
-
     // Shranjevanje izbranih članov v skupino
     Route::post('/groups/{group}/add-members', [GroupController::class, 'addMembers'])->name('groups.addMembers');
-
-
-
+    Route::post('/groups/{group}/leave', [GroupController::class, 'leave'])->name('groups.leave');
+    Route::get('/groups', [GroupController::class, 'index'])->name('groups.index');
+    Route::get('/groups/{group}/detailed-show', [GroupController::class, 'detailedShow'])->name('groups.detailedShow');
 
 });
 

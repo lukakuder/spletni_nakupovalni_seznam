@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Tags\HasTags;
 
 class ShoppingList extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasTags;
 
     /**
      * The attributes that are mass assignable.
@@ -43,7 +44,7 @@ class ShoppingList extends Model
     /**
      * The user that belong to the shopping list.
      */
-    protected function user(): BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
@@ -51,7 +52,7 @@ class ShoppingList extends Model
     /**
      * The group that belong to the shopping list.
      */
-    protected function group(): BelongsTo
+    public function group(): BelongsTo
     {
         return $this->belongsTo(Group::class, 'group_id');
     }

@@ -14,14 +14,12 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("Tukaj bodo v prihodnosti skupine") }}
-
                     @if($groups->isEmpty())
                         <p>{{ __('Ni skupin.') }}</p>
                     @else
                         <ul>
                             @foreach($groups as $group)
-                                <li>{{ $group->name }}</li> <!-- Replace `name` with the actual field you want to display -->
+                                <x-groups.group-card :group="$group" />
                             @endforeach
                         </ul>
                     @endif

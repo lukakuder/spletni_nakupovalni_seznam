@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Tags\HasTags;
 
 class Group extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasTags;
 
     /**
      * The attributes that are mass assignable.
@@ -31,7 +32,7 @@ class Group extends Model
      */
     public function getShoppingLists()
     {
-        return $this->shoppingLists()->get(); // returns collection of lists
+        return $this->shoppingLists()->get();
     }
     /**
      * The users that belong to the group.
@@ -40,6 +41,11 @@ class Group extends Model
     {
         return $this->belongsToMany(User::class, 'group_user');
     }
+    public function users1()
+    {
+        return $this->belongsToMany(User::class, 'group_user', 'group_id', 'user_id');
+    }
+
 
     /**
      * The lists that belong to the group.

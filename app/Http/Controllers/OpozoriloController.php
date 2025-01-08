@@ -49,5 +49,4 @@ class OpozoriloController extends Controller
 
         return response()->json(['neprebranaOpozorila' => $neprebranaOpozorila]);
     }
-
 }
