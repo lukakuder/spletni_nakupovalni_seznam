@@ -8,7 +8,7 @@ use Illuminate\Broadcasting\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use App\Models\User;
 
-class OpozoriloOznacenoKotPrebrano implements ShouldBroadcast
+class NotificationMarkedAsRead implements ShouldBroadcast
 {
     use InteractsWithSockets, SerializesModels;
 
