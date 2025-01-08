@@ -33,7 +33,7 @@
                 <!-- Moje Seznami -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('opozorila.index')" :active="request()->routeIs('opozorila.index')">
-                        {{ __('Opozorila') }}
+                        {{ __('Obvestila') }}
                     </x-nav-link>
                 </div>
 
