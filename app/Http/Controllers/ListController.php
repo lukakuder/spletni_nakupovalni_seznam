@@ -125,7 +125,7 @@ class ListController extends Controller
         // An example of print an informational message
         Log::channel('lists')->info('A new list has been created!');
 
-        return redirect()->route('user.lists')->with('success', 'List created successfully!');
+        return redirect()->route('user.lists')->with('success', 'Seznam je bil uspešno ustvarjen!');
     }
 
     /**
@@ -152,7 +152,7 @@ class ListController extends Controller
             'total_price' => $request->amount * $request->price_per_item,
         ]);
 
-        return redirect()->route('lists.show', $id)->with('success', 'Item added successfully!');
+        return redirect()->route('lists.show', $id)->with('success', 'Izdelek je bil uspešno dodan!');
     }
 
     /**
@@ -209,7 +209,7 @@ class ListController extends Controller
         $list->update(['reminder_date' => $request->reminder_date]);
 
         return redirect()->route('lists.show', $id)
-            ->with('success', 'Reminder updated successfully!');
+            ->with('success', 'Opomnik je bil uspešno posodobljen!');
     }
 
     /**
@@ -256,7 +256,7 @@ class ListController extends Controller
         }
 
         return redirect()->route('lists.show', $id)
-            ->with('success', 'Items imported successfully!');
+            ->with('success', 'Izdelki so bili uspešno uvoženi');
     }
 
     public function uploadReceipt(Request $request, ShoppingList $list)
@@ -293,7 +293,7 @@ class ListController extends Controller
             'file_path' => $filePath,
         ]);
 
-        return redirect()->route('lists.show', $listId)->with('success', 'Receipt added successfully.');
+        return redirect()->route('lists.show', $listId)->with('success', 'Račun je bil uspešno dodan.');
     }
 
     /**
@@ -313,7 +313,7 @@ class ListController extends Controller
 
         // validate requested quantity
         if ($item->amount < $item->purchased + $request->quantity) {
-            return redirect()->back()->with('error', 'Quantity exceeds available amount');
+            return redirect()->back()->with('error', 'Količina presega dovoljeno mejo.');
         }
 
         // update purchased count
@@ -327,7 +327,7 @@ class ListController extends Controller
             'quantity' => $request->quantity,
         ]);
 
-        return redirect()->back()->with('success', 'Item marked as purchased successfully');
+        return redirect()->back()->with('success', 'Izdelek je bil kupljen.');
     }
 
     /**

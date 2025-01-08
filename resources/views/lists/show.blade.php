@@ -199,26 +199,28 @@
                     @endif
 
                     <button id="open-receipt-modal"
-                            class="mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            class="mt-6 bg-blue-500 hover:bg-blue-700 text-gray-900 font-bold py-2 px-4 rounded">
                         {{ __('Dodaj račun') }}
                     </button>
 
                     <div id="receipt-modal" class="hidden mt-6">
                         <form action="{{ route('lists.storeReceipt', $list->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
-                            <label for="name" class="block text-sm font-medium text-white">{{ __('Ime računa') }}</label>
-                            <input type="text" id="name" name="name" class="block w-full mt-1">
+                            <label for="name" class="block text-sm font-medium text-gray-900">{{ __('Ime računa') }}</label>
+                            <input type="text" id="name" name="name"
+                                   class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black">
 
-                            <label for="file" class="block text-sm font-medium text-white mt-4">{{ __('Datoteka') }}</label>
-                            <input type="file" id="file" name="file" class="block w-full mt-1">
+                            <label for="file" class="block text-sm font-medium text-gray-900 mt-4">{{ __('Datoteka') }}</label>
+                            <input type="file" id="file" name="file"
+                                   class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black">
 
                             <div class="flex justify-end mt-4">
                                 <button type="submit"
-                                        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                                    {{ __('Shrani') }}
+                                        class="bg-purple-500 hover:bg-purple-700 text-gray-900 font-bold py-2 px-4 rounded">
+                                    {{ __('Naloži') }}
                                 </button>
                                 <button type="button" id="close-receipt-modal"
-                                        class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2">
+                                        class="bg-gray-500 hover:bg-gray-700 text-gray-900 font-bold py-2 px-4 rounded ml-2">
                                     {{ __('Prekliči') }}
                                 </button>
                             </div>
@@ -347,7 +349,17 @@
         });
     </script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        const successMessage = document.getElementById('success-message');
+        const addReceiptButton = document.getElementById('open-receipt-modal');
 
+        if (successMessage && addReceiptButton) {
+        const buttonMarginBottom = parseInt(window.getComputedStyle(addReceiptButton).marginBottom, 10);
+        successMessage.style.marginTop = `${buttonMarginBottom + 24}px`; // Odmik na podlagi gumbovega spodnjega roba
+        }
+        });
+    </script>
 
 
 </x-app-layout>
