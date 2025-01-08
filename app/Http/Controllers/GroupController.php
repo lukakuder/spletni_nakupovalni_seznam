@@ -26,6 +26,11 @@ class GroupController extends Controller
 
         return view('user.groups', compact('groups'));
     }
+    public function detailedShow($groupId)
+    {
+        $group = Group::find($groupId); // Predpostavljam, da imaš model Group
+        return view('groups.detailedShow', compact('group'));
+    }
 
     /**
      * Returns the view for creating a new group.
@@ -102,6 +107,26 @@ class GroupController extends Controller
 
         return redirect()->route('user.groups')->with('success', 'Skupina uspešno ustvarjena!');
     }
+    public function leave(Request $request, Group $group)
+    {
+        // Pridobi trenutno prijavljenega uporabnika
+        $userId = auth()->id();
+
+        if (!$userId) {
+            return redirect()->back()->with('error', 'Niste prijavljeni.');
+        }
+
+        // Preveri, ali je uporabnik član skupine
+        if (!$group->users()->where('users.id', $userId)->exists()) {
+            return redirect()->back()->with('error', 'Niste član te skupine.');
+        }
+
+        // Odstrani uporabnika iz skupine
+        $group->users1()->detach($userId);
+
+        return redirect()->route('groups.index')->with('success', 'Uspešno ste zapustili skupino.');
+    }
+
 
     public function addMembersForm($groupId)
     {

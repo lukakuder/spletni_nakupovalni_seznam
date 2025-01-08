@@ -41,6 +41,11 @@ class Group extends Model
     {
         return $this->belongsToMany(User::class, 'group_user');
     }
+    public function users1()
+    {
+        return $this->belongsToMany(User::class, 'group_user', 'group_id', 'user_id');
+    }
+
 
     /**
      * The lists that belong to the group.
