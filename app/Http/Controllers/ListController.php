@@ -400,4 +400,36 @@ class ListController extends Controller
 
         return view('lists.show', compact('list', 'divided'));
     }
+
+    public function duplicate($id)
+    {
+        // Poišči obstoječi seznam
+        $originalList = ShoppingList::with('items')->find($id);
+
+        if (!$originalList) {
+            return response()->json(['error' => 'Seznam ne obstaja.'], 404);
+        }
+
+        // Preveri, ali ima uporabnik pravico do kopiranja
+        if ($originalList->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Nimate dovoljenja za kopiranje tega seznama.'], 403);
+        }
+
+        // Ustvari kopijo seznama
+        $newList = $originalList->replicate();
+        $newList->name = $originalList->name . ' (kopija)';
+        $newList->save();
+
+        // Kopiraj pripadajoče elemente seznama
+        foreach ($originalList->items as $item) {
+            $newItem = $item->replicate();
+            $newItem->list_id = $newList->id;
+            $newItem->save();
+        }
+
+        return response()->json([
+            'message' => 'Seznam uspešno kopiran.',
+            'new_list' => $newList,
+        ], 201);
+    }
 }
