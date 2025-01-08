@@ -7,6 +7,7 @@ use App\Models\Group;
 use App\Models\PurchasedItem;
 use App\Models\ShoppingList;
 use App\Models\ListItem;
+use App\Models\Receipt;
 
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Foundation\Application;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Tags\Tag;
 
 class ListController extends Controller
@@ -274,6 +276,24 @@ class ListController extends Controller
         // Preusmeri nazaj na prikaz seznama z uspešno sporočilo
         return redirect()->route('lists.show', $list->id)
             ->with('success', 'Račun je bil uspešno naložen!');
+    }
+
+    public function storeReceipt(Request $request, $listId)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'file' => 'required|file|mimes:jpg,png,pdf|max:2048',
+        ]);
+
+        $filePath = $request->file('file')->store('receipts');
+
+        Receipt::create([
+            'shopping_list_id' => $listId,
+            'name' => $request->input('name'),
+            'file_path' => $filePath,
+        ]);
+
+        return redirect()->route('lists.show', $listId)->with('success', 'Receipt added successfully.');
     }
 
     /**
