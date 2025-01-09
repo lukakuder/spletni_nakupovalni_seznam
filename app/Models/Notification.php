@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Opozorilo extends Model
+class Notification extends Model
 {
     use HasFactory;
 
@@ -38,7 +38,7 @@ class Opozorilo extends Model
      * @param int $userId ID uporabnika, ki prejme opozorilo
      * @param string $message Vsebina opozorila
      * @param int|null $groupId ID skupine, če je opozorilo povezano s skupino
-     * @return Opozorilo Novo ustvarjeno opozorilo
+     * @return Notification Novo ustvarjeno opozorilo
      */
     public static function createForUser(int $userId, string $message, ?int $groupId = null): self
     {

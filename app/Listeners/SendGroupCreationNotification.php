@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\GroupCreatedEvent;
-use App\Models\Opozorilo;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Log;
 
 class SendGroupCreationNotification
@@ -14,7 +14,7 @@ class SendGroupCreationNotification
         $members = $group->users;
 
         foreach ($members as $member) {
-            Opozorilo::create([
+            Notification::create([
                 'user_id' => $member->id,
                 'message' => "Dodani ste bili v novo skupino: {$group->name}",
                 'prebrano' => false,

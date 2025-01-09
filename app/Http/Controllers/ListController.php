@@ -7,6 +7,7 @@ use App\Models\Group;
 use App\Models\PurchasedItem;
 use App\Models\ShoppingList;
 use App\Models\ListItem;
+use App\Models\Receipt;
 
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Foundation\Application;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Tags\Tag;
 
 class ListController extends Controller
@@ -123,7 +125,7 @@ class ListController extends Controller
         // An example of print an informational message
         Log::channel('lists')->info('A new list has been created!');
 
-        return redirect()->route('user.lists')->with('success', 'List created successfully!');
+        return redirect()->route('user.lists')->with('success', 'Seznam je bil uspešno ustvarjen!');
     }
 
     /**
@@ -150,7 +152,7 @@ class ListController extends Controller
             'total_price' => $request->amount * $request->price_per_item,
         ]);
 
-        return redirect()->route('lists.show', $id)->with('success', 'Item added successfully!');
+        return redirect()->route('lists.show', $id)->with('success', 'Izdelek je bil uspešno dodan!');
     }
 
     /**
@@ -207,7 +209,7 @@ class ListController extends Controller
         $list->update(['reminder_date' => $request->reminder_date]);
 
         return redirect()->route('lists.show', $id)
-            ->with('success', 'Reminder updated successfully!');
+            ->with('success', 'Opomnik je bil uspešno posodobljen!');
     }
 
     /**
@@ -254,7 +256,7 @@ class ListController extends Controller
         }
 
         return redirect()->route('lists.show', $id)
-            ->with('success', 'Items imported successfully!');
+            ->with('success', 'Izdelki so bili uspešno uvoženi');
     }
 
     public function uploadReceipt(Request $request, ShoppingList $list)
@@ -276,6 +278,24 @@ class ListController extends Controller
             ->with('success', 'Račun je bil uspešno naložen!');
     }
 
+    public function storeReceipt(Request $request, $listId)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'file' => 'required|file|mimes:jpg,png,pdf|max:2048',
+        ]);
+
+        $filePath = $request->file('file')->store('receipts');
+
+        Receipt::create([
+            'shopping_list_id' => $listId,
+            'name' => $request->input('name'),
+            'file_path' => $filePath,
+        ]);
+
+        return redirect()->route('lists.show', $listId)->with('success', 'Račun je bil uspešno dodan.');
+    }
+
     /**
      * Marks an item as purchased
      *
@@ -293,7 +313,7 @@ class ListController extends Controller
 
         // validate requested quantity
         if ($item->amount < $item->purchased + $request->quantity) {
-            return redirect()->back()->with('error', 'Quantity exceeds available amount');
+            return redirect()->back()->with('error', 'Količina presega dovoljeno mejo.');
         }
 
         // update purchased count
@@ -307,7 +327,7 @@ class ListController extends Controller
             'quantity' => $request->quantity,
         ]);
 
-        return redirect()->back()->with('success', 'Item marked as purchased successfully');
+        return redirect()->back()->with('success', 'Izdelek je bil kupljen.');
     }
 
     /**
@@ -399,5 +419,37 @@ class ListController extends Controller
         }
 
         return view('lists.show', compact('list', 'divided'));
+    }
+
+    public function duplicate($id)
+    {
+        // Poišči obstoječi seznam
+        $originalList = ShoppingList::with('items')->find($id);
+
+        if (!$originalList) {
+            return response()->json(['error' => 'Seznam ne obstaja.'], 404);
+        }
+
+        // Preveri, ali ima uporabnik pravico do kopiranja
+        if ($originalList->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Nimate dovoljenja za kopiranje tega seznama.'], 403);
+        }
+
+        // Ustvari kopijo seznama
+        $newList = $originalList->replicate();
+        $newList->name = $originalList->name . ' (kopija)';
+        $newList->save();
+
+        // Kopiraj pripadajoče elemente seznama
+        foreach ($originalList->items as $item) {
+            $newItem = $item->replicate();
+            $newItem->list_id = $newList->id;
+            $newItem->save();
+        }
+
+        return response()->json([
+            'message' => 'Seznam uspešno kopiran.',
+            'new_list' => $newList,
+        ], 201);
     }
 }

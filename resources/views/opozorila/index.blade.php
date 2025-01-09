@@ -9,10 +9,8 @@
                         </h2>
                     </div>
                 </x-slot>
-
-
                     @if($opozorila->isEmpty())
-                        <p class="text-gray-500">Nimate novih opozoril.</p>
+                        <p class="text-gray-500">Nimate novih obvestil.</p>
                     @else
                         <table class="table-auto border-separate border-spacing-4 w-full">
                             <thead>
@@ -79,7 +77,7 @@
 
                         function osveziSteviloNeprebranih() {
                             $.get('{{ route("opozorila.steviloNeprebranih") }}', function (data) {
-                                $('#neprebrana-opozorila').text('Neprebrana opozorila: ' + data.neprebranaOpozorila);
+                                $('#neprebrana-opozorila').text('Neprebrana obvestila: ' + data.neprebranaOpozorila);
                             });
                         }
                     });

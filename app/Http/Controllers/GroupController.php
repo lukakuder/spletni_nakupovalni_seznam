@@ -8,7 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Models\User;
-use App\Models\Opozorilo;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Tags\Tag;
 
@@ -96,7 +96,7 @@ class GroupController extends Controller
         $group->users()->attach(auth()->user()->id);
 
         // Dodaj opozorilo za trenutnega uporabnika
-        Opozorilo::create([
+        Notification::create([
             'user_id' => Auth::id(),
             'message' => 'Skupina "' . $group->name . '" je bila uspešno ustvarjena.',
             'prebrano' => false,

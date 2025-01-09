@@ -5,7 +5,7 @@ use App\Http\Controllers\ListController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\OpozoriloController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\HomeController;
 
 Route::get('/groups', [GroupController::class, 'index'])->name('groups.index');
@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/lists/create', [ListController::class, 'create'])->name('lists.create');
     Route::post('/lists/store', [ListController::class, 'store'])->name('lists.store');
     Route::post('/lists/{list}/receipts', [ListController::class, 'uploadReceipt'])->name('lists.uploadReceipt');
+    Route::post('/lists/{list}/receipts', [ListController::class, 'storeReceipt'])->name('lists.storeReceipt');
 
     Route::get('/lists/{id}', [ListController::class, 'show'])->name('lists.show');
     Route::post('/lists/{id}/items', [ListController::class, 'storeItem'])->name('lists.items.store');
@@ -41,6 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/lists/{id}/export', [ListController::class, 'export'])->name('lists.export');
     Route::get('/lists/{id}/export-report', [ListController::class, 'export_report'])->name('lists.exportReport');
     Route::get('/lists/{id}/divide', [ListController::class, 'divide'])->name('lists.divide');
+    Route::post('/lists/{id}/duplicate', [ListController::class, 'duplicate'])->middleware('auth')->name('lists.duplicate');
 
     Route::patch('/lists/{id}/reminder', [ListController::class, 'updateReminder'])->name('lists.updateReminder');
     Route::patch('/items/{id}/mark-purchased', [ListController::class, 'markAsPurchased'])->name('items.markPurchased');
@@ -53,15 +55,15 @@ Route::middleware('auth')->group(function () {
 
     // TODO: Kramar tole ne more met kr / route ker pokvari nas homepage
     //Route::get('/', [HomeController::class, 'index'])->name('home');
-    Route::middleware('auth')->get('/opozorila', [OpozoriloController::class, 'index'])->name('opozorila.index');
+    Route::middleware('auth')->get('/opozorila', [NotificationController::class, 'index'])->name('opozorila.index');
 
     // Označevanje opozorila kot prebranega
-    Route::middleware('auth')->post('/opozorila/oznaci-prebrano', [OpozoriloController::class, 'oznaciPrebrano'])->name('opozorila.oznaciPrebrano');
-    Route::post('/opozorila/oznaci-prebrano', [OpozoriloController::class, 'oznaciPrebrano'])->name('opozorila.oznaciPrebrano');
+    Route::middleware('auth')->post('/opozorila/oznaci-prebrano', [NotificationController::class, 'oznaciPrebrano'])->name('opozorila.oznaciPrebrano');
+    Route::post('/opozorila/oznaci-prebrano', [NotificationController::class, 'oznaciPrebrano'])->name('opozorila.oznaciPrebrano');
 
     // Pridobitev števila neprebranih opozoril
-    Route::middleware('auth')->get('/opozorila/stevilo-neprebranih', [OpozoriloController::class, 'steviloNeprebranih'])->name('opozorila.steviloNeprebranih');
-    Route::get('/opozorila/stevilo-neprebranih', [OpozoriloController::class, 'steviloNeprebranih'])->name('opozorila.steviloNeprebranih');
+    Route::middleware('auth')->get('/opozorila/stevilo-neprebranih', [NotificationController::class, 'steviloNeprebranih'])->name('opozorila.steviloNeprebranih');
+    Route::get('/opozorila/stevilo-neprebranih', [NotificationController::class, 'steviloNeprebranih'])->name('opozorila.steviloNeprebranih');
 
     Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 
