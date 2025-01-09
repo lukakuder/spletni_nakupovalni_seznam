@@ -42,10 +42,11 @@
                                 @endforeach
                             </ul>
                         </div>
-                        <x-primary-button onclick="window.location='{{ route('groups.detailedShow', ['group' => $group->id]) }}'">
-                            {{ __('Podroben ogled skupine') }}
-                        </x-primary-button>
-
+                        <div>
+                            <x-primary-button onclick="window.location='{{ route('groups.detailedShow', ['group' => $group->id]) }}'">
+                                {{ __('Podroben ogled skupine') }}
+                            </x-primary-button>
+                        </div>
                     </div>
                 </div>
 
