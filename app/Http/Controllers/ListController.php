@@ -44,7 +44,23 @@ class ListController extends Controller
      */
     public function getUsersLists(ListFilters $filters): View
     {
-        $lists = Auth::user()->lists()->filter($filters)->get();
+        // Fetch the user's own shopping lists with applied filters.
+        $userLists = Auth::user()
+            ->lists()
+            ->filter($filters)
+            ->get();
+
+        // Fetch the user's group shopping lists with applied filters.
+        $groupLists = Auth::user()
+            ->groups()
+            ->with(['lists' => function ($query) use ($filters) {
+                $query->filter($filters);
+            }])
+            ->get()
+            ->pluck('lists') // Extract all lists from groups.
+            ->flatten();
+
+        $lists = $userLists->merge($groupLists);
 
         return view('user.lists', [
             'lists' => $lists,

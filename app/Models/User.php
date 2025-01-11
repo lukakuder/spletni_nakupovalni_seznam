@@ -51,9 +51,6 @@ class User extends Authenticatable
     /**
      * Accessor for the profile picture URL.
      */
-    /**
-     * Accessor for the profile picture URL.
-     */
     public function getProfilePictureUrlAttribute(): ?string
     {
         return $this->profile_picture
