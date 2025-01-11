@@ -1,8 +1,12 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Seznam detajli') }}
-        </h2>
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                {{ __('Seznam detajli') }}
+            </h2>
+
+            @include('lists.buttons-top')
+        </div>
     </x-slot>
 
     <div class="py-12">
@@ -20,6 +24,8 @@
                             <span class="font-bold">{{ $list->reminder_date->format('d.m.Y') }}</span>
                         </p>
                     @endif
+
+                    @include('lists.buttons-bottom')
 
                     <h4 class="text-lg mt-6 font-bold">{{ __('Izdelki') }}</h4>
                     @if ($list->items->isEmpty())
@@ -91,64 +97,30 @@
                         </div>
                     @endif
 
-                    <div class="mt-6">
-                        <button id="open-modal-btn"
-                                class="mt-6 bg-blue-500 hover:bg-blue-700 text-gray-900 font-bold py-2 px-4 rounded">
-                            {{ __('Dodaj izdelek') }}
-                        </button>
+                    <div id="import-form-container" class="hidden mt-4">
+                        <form action="{{ route('lists.import', $list->id) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <label for="import_file" class="block text-sm font-medium text-gray-900">
+                                {{ __('Naloži datoteko (.txt)') }}
+                            </label>
 
-                        <button id="import-button"
-                                class="bg-purple-500 hover:bg-purple-700 text-gray-900 font-bold py-2 px-4 rounded">
-                            {{ __('Uvozi podatke') }}
-                        </button>
+                            <input type="file" id="import_file" name="import_file" accept=".txt"
+                                   class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white">
 
-                        <a href="{{ route('lists.export', $list->id) }}"
-                           class="mt-6 bg-red-500 hover:bg-red-700 text-gray-900 font-bold py-2 px-4 rounded inline-block text-center">
-                            {{ __('Izvozi podatke') }}
-                        </a>
-
-                        <a href="{{ route('lists.exportReport', $list->id) }}"
-                           class="mt-6 bg-red-500 hover:bg-red-700 text-gray-900 font-bold py-2 px-4 rounded inline-block text-center">
-                            {{ __('Izvozi poročilo seznama') }}
-                        </a>
-
-                        @if($list->group()->exists())
-                            <a href="{{ route('lists.divide', $list->id) }}"
-                               class="mt-6 bg-red-500 hover:bg-red-700 text-gray-900 font-bold py-2 px-4 rounded inline-block text-center">
-                                {{ __('Razdeli seznam') }}
-                            </a>
-                        @endif
-
-                        <div id="import-form-container" class="hidden mt-4">
-                            <form action="{{ route('lists.import', $list->id) }}" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <label for="import_file" class="block text-sm font-medium text-gray-900">
-                                    {{ __('Naloži datoteko (.txt)') }}
-                                </label>
-
-                                <input type="file" id="import_file" name="import_file" accept=".txt"
-                                       class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white">
-
-                                <div class="flex justify-end mt-4">
-                                    <button type="submit"
-                                            class="bg-green-500 hover:bg-green-700 text-gray-900 font-bold py-2 px-4 rounded">
-                                        {{ __('Naloži') }}
-                                    </button>
-                                    <button type="button" id="close-import-form"
-                                            class="bg-gray-500 hover:bg-gray-700 text-gray-900 font-bold py-2 px-4 rounded ml-2">
-                                        {{ __('Prekliči') }}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+                            <div class="flex justify-end mt-4">
+                                <button type="submit"
+                                        class="bg-green-500 hover:bg-green-700 text-gray-900 font-bold py-2 px-4 rounded">
+                                    {{ __('Naloži') }}
+                                </button>
+                                <button type="button" id="close-import-form"
+                                        class="bg-gray-500 hover:bg-gray-700 text-gray-900 font-bold py-2 px-4 rounded ml-2">
+                                    {{ __('Prekliči') }}
+                                </button>
+                            </div>
+                        </form>
                     </div>
 
                     <div class="mt-6">
-                        <button id="set-reminder-btn"
-                                class="bg-blue-500 hover:bg-blue-700 text-gray-900 font-bold py-2 px-4 rounded">
-                            {{ __('Nastavi opomnik') }}
-                        </button>
-
                         <div id="reminder-form-container" class="hidden mt-4">
                             <form action="{{ route('lists.updateReminder', $list->id) }}" method="POST">
                                 @csrf
@@ -197,11 +169,6 @@
                             @endforeach
                         </ul>
                     @endif
-
-                    <button id="open-receipt-modal"
-                            class="mt-6 bg-blue-500 hover:bg-blue-700 text-gray-900 font-bold py-2 px-4 rounded">
-                        {{ __('Dodaj račun') }}
-                    </button>
 
                     <div id="receipt-modal" class="hidden mt-6">
                         <form action="{{ route('lists.storeReceipt', $list->id) }}" method="POST" enctype="multipart/form-data">
