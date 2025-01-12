@@ -8,12 +8,12 @@
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"/>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-gray-200 font-sans">
-<header class="flex justify-between items-center px-6 py-4 bg-black shadow-lg">
+<body class="min-h-screen bg-gray-100 font-sans">
+<header class="flex justify-between items-center px-6 bg-white py-4 ">
     <!-- Changed text color to white -->
     <h1 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
         {{ __('Spletni nakupovalni seznam') }}
@@ -28,11 +28,13 @@
                     Dashboard
                 </a>
             @else
-                <!-- Changed text color to white with hover effect -->
+                <!-- Changed text color to white with hover effect-->
                 <a href="{{ route('login') }}"
                    class="text-l font-semibold text-gray-800 dark:text-gray-200 px-4 py-2 rounded transition">
                     Prijava
                 </a>
+
+
                 @if (Route::has('register'))
                     <!-- Changed text color to white with hover effect -->
                     <a href="{{ route('register') }}"
@@ -44,6 +46,5 @@
         </nav>
     @endif
 </header>
-
 </body>
 </html>
