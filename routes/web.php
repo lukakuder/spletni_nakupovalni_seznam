@@ -56,6 +56,7 @@ Route::middleware('auth')->group(function () {
     // TODO: Kramar tole ne more met kr / route ker pokvari nas homepage
     //Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::middleware('auth')->get('/opozorila', [NotificationController::class, 'index'])->name('opozorila.index');
+    Route::get('/opozorila', [NotificationController::class, 'prikaziOpozorila'])->name('opozorila.index');
 
     // Označevanje opozorila kot prebranega
     Route::middleware('auth')->post('/opozorila/oznaci-prebrano', [NotificationController::class, 'oznaciPrebrano'])->name('opozorila.oznaciPrebrano');

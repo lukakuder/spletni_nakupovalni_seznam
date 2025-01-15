@@ -41,6 +41,20 @@ class NotificationController extends Controller
     }
 
 
+
+    public function prikaziOpozorila()
+    {
+        $opozorila = Notification::where('user_id', Auth::id()) // Filtriranje po trenutnem uporabniku
+        ->orderBy('prebrano', 'asc')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('opozorila.index', compact('opozorila'));
+    }
+
+
+
+
     public function steviloNeprebranih()
     {
         $neprebranaOpozorila = Notification::where('user_id', Auth::id())
