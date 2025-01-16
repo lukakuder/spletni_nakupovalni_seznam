@@ -156,7 +156,7 @@ class ListController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'amount' => 'required|integer|min:1',
-            'price_per_item' => 'nullable|numeric|min:0',
+            'price_per_item' => 'required|numeric|min:0',
         ]);
 
         $list = ShoppingList::findOrFail($id);
@@ -323,28 +323,37 @@ class ListController extends Controller
     {
         $request->validate([
             'quantity' => 'required|integer|min:1',
+            'price_per_item' => 'nullable|numeric|min:0|max:10000', // Dodaj max ceno po potrebi
         ]);
 
         $item = ListItem::findOrFail($id);
 
-        // validate requested quantity
+        // Preveri, ali je količina v dovoljenem obsegu
         if ($item->amount < $item->purchased + $request->quantity) {
             return redirect()->back()->with('error', 'Količina presega dovoljeno mejo.');
         }
 
-        // update purchased count
+        // Preveri, ali je skupna cena v dovoljenem obsegu
+        $totalPrice = $request->quantity * ($request->price_per_item ?? 0);
+        if ($totalPrice > 10000) { // Max znesek določi po potrebi
+            return redirect()->back()->with('error', 'Končni znesek presega dovoljeno mejo.');
+        }
+
+        // Posodobi število kupljenih izdelkov
         $item->purchased += $request->quantity;
         $item->save();
 
-        // record in the purchased_items table
+        // Zabeleži nakup
         PurchasedItem::create([
             'list_item_id' => $item->id,
             'user_id' => auth()->id(),
             'quantity' => $request->quantity,
+            'price_per_item' => $request->price_per_item ?? 0,
         ]);
 
         return redirect()->back()->with('success', 'Izdelek je bil kupljen.');
     }
+
 
     /**
      * Exports a report of who bought what and their total spending.

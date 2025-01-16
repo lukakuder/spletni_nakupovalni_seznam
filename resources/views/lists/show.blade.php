@@ -207,23 +207,28 @@
     <div id="modal" class="fixed z-10 inset-0 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen">
             <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-lg p-6 border border-gray-300">
-                <h4 class="text-lg font-bold mb-4 text-gray-900">{{ __('Dodaj izdelek') }}</h4> <!-- White text -->
-                <form action="{{ route('lists.items.store', $list->id) }}" method="POST">
+                <h4 class="text-lg font-bold mb-4 text-gray-900">{{ __('Dodaj izdelek') }}</h4>
+                <form action="{{ route('lists.items.store', $list->id) }}" method="POST" id="add-item-form" novalidate>
                     @csrf
                     <div class="mb-4">
-                        <label for="name" class="block text-sm font-medium text-gray-900">{{ __('Izdelek') }}</label> <!-- White text -->
+                        <label for="name" class="block text-sm font-medium text-gray-900">{{ __('Izdelek') }}</label>
                         <input type="text" name="name" id="name" required
-                               class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black"> <!-- Black text inside input -->
+                               class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black">
                     </div>
                     <div class="mb-4">
-                        <label for="amount" class="block text-sm font-medium text-gray-900">{{ __('Količina') }}</label> <!-- White text -->
-                        <input type="number" name="amount" id="amount" required min="1"
-                               class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black"> <!-- Black text inside input -->
+                        <label for="amount" class="block text-sm font-medium text-gray-900">{{ __('Količina') }}</label>
+                        <input type="number" name="amount" id="amount" required min="1" max="100"
+                               class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black">
                     </div>
                     <div class="mb-4">
-                        <label for="price_per_item" class="block text-sm font-medium text-gray-900">{{ __('Cena na kos') }}</label> <!-- White text -->
-                        <input type="number" name="price_per_item" id="price_per_item" step="0.01" min="0"
-                               class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black"> <!-- Black text inside input -->
+                        <label for="price_per_item" class="block text-sm font-medium text-gray-900">{{ __('Cena na kos') }}</label>
+                        <div class="flex mt-1 rounded-md shadow-sm">
+                            <input type="number" name="price_per_item" id="price_per_item" step="0.01" min="0" max="1000" required
+                                   class="block w-full rounded-none rounded-l-md border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black">
+                            <span class="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500">
+                            €
+                        </span>
+                        </div>
                     </div>
                     <div class="flex justify-end">
                         <button type="submit" class="bg-green-500 hover:bg-green-700 text-gray-900 font-bold py-2 px-4 rounded mr-2">
@@ -317,16 +322,54 @@
     </script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-        const successMessage = document.getElementById('success-message');
-        const addReceiptButton = document.getElementById('open-receipt-modal');
+        document.getElementById('add-item-form').addEventListener('submit', function (event) {
+            const amountInput = document.getElementById('amount');
+            const priceInput = document.getElementById('price_per_item');
+            const amount = parseFloat(amountInput.value);
+            const pricePerItem = parseFloat(priceInput.value);
 
-        if (successMessage && addReceiptButton) {
-        const buttonMarginBottom = parseInt(window.getComputedStyle(addReceiptButton).marginBottom, 10);
-        successMessage.style.marginTop = `${buttonMarginBottom + 24}px`; // Odmik na podlagi gumbovega spodnjega roba
-        }
+            const maxAmount = 1000;
+            const maxPricePerItem = 10000;
+            const maxTotalPrice = 100000;
+
+            let errors = []; // Polje za zbiranje napak
+
+            // Preveri, če sta polji prazni
+            if (!amountInput.value.trim()) {
+                errors.push('Polje za količino ne sme biti prazno.');
+                isValid = false;
+            }
+
+            if (!priceInput.value.trim()) {
+                errors.push('Polje za ceno na kos ne sme biti prazno.');
+                isValid = false;
+            }
+
+            // Preveri, če količina presega največjo dovoljeno vrednost
+            if (amount > maxAmount) {
+                errors.push('Količina ne sme preseči ' + maxAmount + '.');
+                isValid = false;
+            }
+
+            // Preveri, če cena na kos presega največjo dovoljeno vrednost
+            if (pricePerItem > maxPricePerItem) {
+                errors.push('Cena na kos ne sme preseči ' + maxPricePerItem + ' €.');
+                isValid = false;
+            }
+
+            // Preveri, če skupna cena presega največjo dovoljeno vrednost
+            if (amount * pricePerItem > maxTotalPrice) {
+                errors.push('Skupna cena ne sme preseči ' + maxTotalPrice + ' €.');
+                isValid = false;
+            }
+
+            // Če so napake, jih prikažemo in preprečimo oddajo obrazca
+            if (errors.length > 0) {
+                event.preventDefault(); // Prepreči privzeto oddajo obrazca
+                alert(errors.join('\n')); // Združi napake v eno sporočilo
+            }
         });
-    </script>
 
+    </script>
 
 </x-app-layout>
