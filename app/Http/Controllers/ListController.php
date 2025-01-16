@@ -301,7 +301,7 @@ class ListController extends Controller
             'file' => 'required|file|mimes:jpg,png,pdf|max:2048',
         ]);
 
-        $filePath = $request->file('file')->store('receipts');
+        $filePath = $request->file('file')->store('receipts', 'public');
 
         Receipt::create([
             'shopping_list_id' => $listId,
@@ -310,6 +310,19 @@ class ListController extends Controller
         ]);
 
         return redirect()->route('lists.show', $listId)->with('success', 'Račun je bil uspešno dodan.');
+    }
+
+    public function destroyReceipt($id)
+    {
+        $receipt = Receipt::findOrFail($id);
+
+        // Izbriši datoteko iz strežnika
+        Storage::delete($receipt->file_path);
+
+        // Izbriši zapis iz baze
+        $receipt->delete();
+
+        return redirect()->back()->with('success', 'Račun je bil uspešno izbrisan.');
     }
 
     /**

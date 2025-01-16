@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/lists/store', [ListController::class, 'store'])->name('lists.store');
     Route::post('/lists/{list}/receipts', [ListController::class, 'uploadReceipt'])->name('lists.uploadReceipt');
     Route::post('/lists/{list}/receipts', [ListController::class, 'storeReceipt'])->name('lists.storeReceipt');
+    Route::delete('/receipts/{id}', [ListController::class, 'destroyReceipt'])->name('receipts.destroy');
 
     Route::get('/lists/{id}', [ListController::class, 'show'])->name('lists.show');
     Route::post('/lists/{id}/items', [ListController::class, 'storeItem'])->name('lists.items.store');

@@ -157,14 +157,30 @@
                         </div>
                     </div>
 
-                    <h4 class="text-lg mt-6 font-bold">{{ __('Računi') }}</h4>
+                    <h4 class="text-lg mt-6 font-bold">{{ __('Seznam Računov') }}</h4>
+
                     @if ($list->receipts->isEmpty())
                         <p class="text-gray-500">{{ __('Ni dodanih računov.') }}</p>
                     @else
-                        <ul>
+                        <ul class="space-y-2 mt-4"> <!-- Dodan zamik pred seznamom -->
                             @foreach ($list->receipts as $receipt)
-                                <li>
-                                    {{ $receipt->name }} - <a href="{{ Storage::url($receipt->file_path) }}" class="text-blue-500 hover:underline" target="_blank">{{ __('Prenesi') }}</a>
+                                <li class="flex items-center space-x-4">
+                                    <!-- Gumb za prikaz računa v novem oknu (odebeljen in črne barve) -->
+                                    <button onclick="window.open('{{ Storage::url($receipt->file_path) }}', '_blank')" class="text-black font-bold hover:underline">
+                                        {{ $receipt->name }}
+                                    </button>
+
+                                    <!-- Gumb za prenos (dejanski prenos datoteke) -->
+                                    <a href="{{ Storage::url($receipt->file_path) }}" download class="text-blue-500 hover:underline">
+                                        {{ __('Prenesi') }}
+                                    </a>
+
+                                    <!-- Gumb za brisanje -->
+                                    <form action="{{ route('receipts.destroy', $receipt->id) }}" method="POST" onsubmit="return confirm('{{ __('Ali ste prepričani, da želite izbrisati ta račun?') }}');" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-500 hover:underline">{{ __('Izbriši') }}</button>
+                                    </form>
                                 </li>
                             @endforeach
                         </ul>
@@ -195,7 +211,7 @@
                     </div>
 
                     @if (session('success'))
-                        <div id="success-message" class="mt-20 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                        <div id="success-message" class="mt-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
                             {{ session('success') }}
                         </div>
                     @endif
