@@ -28,14 +28,20 @@
                                 <td class="px-4 py-2">{{ $opozorilo->message }}</td>
                                 <td class="px-4 py-2">{{ $opozorilo->prebrano ? 'Da' : 'Ne' }}</td>
                                 <td class="px-4 py-2">
-                                    @if(!$opozorilo->prebrano)
+                                    @if(!$opozorilo->prebrano && $opozorilo->group_id)
+                                        <!-- Sprejmi povabilo -->
+                                        <button
+                                            class="btn btn-primary btn-sm sprejmi-povabilo bg-blue-500 text-white py-1 px-2 rounded"
+                                            data-id="{{ $opozorilo->id }}">
+                                            Sprejmi povabilo
+                                        </button>
+                                    @elseif(!$opozorilo->prebrano)
+                                        <!-- Označi kot prebrano -->
                                         <button
                                             class="btn btn-success btn-sm oznaci-prebrano bg-green-500 text-white py-1 px-2 rounded"
-                                            data-id="{{ $opozorilo->id }}"
-                                            onclick="window.location.href='{{ route('opozorila.index') }}'">
+                                            data-id="{{ $opozorilo->id }}">
                                             Označi kot prebrano
                                         </button>
-
                                     @endif
                                 </td>
                             </tr>
@@ -45,9 +51,10 @@
                 @endif
             </div>
 
-            <!-- Skripte AJAX-->
+            <!-- Skripte AJAX -->
             <script>
                 $(document).ready(function () {
+                    // Označi opozorilo kot prebrano
                     $('.oznaci-prebrano').on('click', function () {
                         let opozoriloId = $(this).data('id');
 
@@ -56,7 +63,7 @@
                             method: 'POST',
                             data: {
                                 id: opozoriloId,
-                                _token: '{{ csrf_token() }}' // Za CSRF zaščito
+                                _token: '{{ csrf_token() }}'
                             },
                             success: function (response) {
                                 if (response.status === 'success') {
@@ -70,7 +77,31 @@
                                 alert('Prišlo je do napake pri označevanju opozorila.');
                             }
                         });
-                    })
+                    });
+
+                    // Sprejmi povabilo
+                    $('.sprejmi-povabilo').on('click', function () {
+                        let opozoriloId = $(this).data('id');
+
+                        $.ajax({
+                            url: `/notification/${opozoriloId}/accept`,
+                            method: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function (response) {
+                                if (response.status === 'success') {
+                                    alert(response.message);
+                                    location.reload();
+                                } else {
+                                    alert(response.message);
+                                }
+                            },
+                            error: function () {
+                                alert('Prišlo je do napake pri sprejemu povabila.');
+                            }
+                        });
+                    });
 
                     function osveziSteviloNeprebranih() {
                         $.get('{{ route("opozorila.steviloNeprebranih") }}', function (data) {
@@ -81,5 +112,4 @@
             </script>
         </div>
     </div>
-
 </x-app-layout>
