@@ -75,6 +75,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/groups/{group}/leave', [GroupController::class, 'leave'])->name('groups.leave');
     Route::get('/groups', [GroupController::class, 'index'])->name('groups.index');
     Route::get('/groups/{group}/detailed-show', [GroupController::class, 'detailedShow'])->name('groups.detailedShow');
+    Route::post('/group/{groupId}/invite', [NotificationController::class, 'posljiPovabilo'])->middleware('auth');
+    Route::post('/notification/{notificationId}/accept', [NotificationController::class, 'sprejmiPovabilo'])->middleware('auth');
+    Route::post('/opozorila/sprejmi/{id}', [NotificationController::class, 'sprejmiPovabilo'])->name('opozorila.sprejmiPovabilo');
 
 });
 

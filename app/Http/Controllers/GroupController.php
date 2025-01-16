@@ -145,11 +145,29 @@ class GroupController extends Controller
             'users.*' => 'exists:users,id',
         ]);
 
-        // Dodajte izbrane uporabnike v skupino
-        $group->users()->attach($request->users);
+        // Pošljite povabila izbranim uporabnikom
+        $usersToInvite = $request->users;
 
-        return redirect()->route('groups.show', $group->id)->with('success', 'Člani so bili uspešno dodani!');
+        foreach ($usersToInvite as $userId) {
+            // Preverite, ali je povabilo že bilo poslano
+            $existingNotification = Notification::where('user_id', $userId)
+                ->where('group_id', $group->id)
+                ->where('prebrano', false)
+                ->first();
+
+            if (!$existingNotification) {
+                Notification::createForUser(
+                    $userId,
+                    "Prejeli ste povabilo, da se pridružite skupini '{$group->name}'. Kliknite, da sprejmete povabilo.",
+                    $group->id
+                );
+            }
+        }
+
+        return redirect()->route('groups.show', $group->id)
+            ->with('success', 'Povabila so bila uspešno poslana!');
     }
+
     /**
      * Show the form for editing the specified group.
      *
