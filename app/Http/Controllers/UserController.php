@@ -34,6 +34,21 @@ class UserController extends Controller
     }
 
     /**
+     * Toggles the user's group invites setting.
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function toggleGroupInvites(Request $request)
+    {
+        $user = $request->user();
+        $user->allow_group_invites = !$user->allow_group_invites;
+        $user->save();
+
+        return back();
+    }
+
+    /**
      * Update the user's profile information.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
