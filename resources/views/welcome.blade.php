@@ -8,28 +8,37 @@
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"/>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-gray-200 font-sans">
-<header class="flex justify-between items-center px-6 py-4 bg-black shadow-lg">
-    <h1 class="text-2xl font-bold text-purple-300">Nakupovalni seznam</h1>
+<body class="min-h-screen bg-gray-100 font-sans">
+<header class="flex justify-between items-center px-6 bg-white py-4 ">
+    <!-- Changed text color to white -->
+    <h1 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        {{ __('Spletni nakupovalni seznam') }}
+    </h1>
+
     @if (Route::has('login'))
         <nav class="flex space-x-4">
             @auth
+                <!-- Changed text color to white with hover effect -->
                 <a href="{{ url('/dashboard') }}"
-                   class="text-purple-400 hover:bg-purple-500 hover:text-white px-4 py-2 rounded transition">
+                   class="text-white hover:bg-purple-500 hover:text-white px-4 py-2 rounded transition">
                     Dashboard
                 </a>
             @else
+                <!-- Changed text color to white with hover effect-->
                 <a href="{{ route('login') }}"
-                   class="text-purple-400 hover:bg-purple-500 hover:text-white px-4 py-2 rounded transition">
+                   class="text-l font-semibold text-gray-800 dark:text-gray-200 px-4 py-2 rounded transition">
                     Prijava
                 </a>
+
+
                 @if (Route::has('register'))
+                    <!-- Changed text color to white with hover effect -->
                     <a href="{{ route('register') }}"
-                       class="text-purple-400 hover:bg-purple-500 hover:text-white px-4 py-2 rounded transition">
+                       class="text-l font-semibold text-gray-800 dark:text-gray-200 px-4 py-2 rounded transition">
                         Registracija
                     </a>
                 @endif
@@ -37,13 +46,5 @@
         </nav>
     @endif
 </header>
-
-<main class="flex items-center justify-center min-h-[calc(100vh-5rem)] text-center">
-    <div>
-        <p class="text-lg font-medium text-white">
-            Dobrodošli v aplikaciji <span class="text-purple-400 font-semibold">Nakupovalni seznam</span>!
-        </p>
-    </div>
-</main>
 </body>
 </html>
