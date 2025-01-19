@@ -131,7 +131,7 @@ class GroupController extends Controller
     public function addMembersForm($groupId)
     {
         $group = Group::findOrFail($groupId);
-        $users = User::all(); // Pridobite vse uporabnike, ki jih lahko dodate v skupino
+        $users = User::where('allow_group_invites', true)->get();
 
         return view('groups.add-member', compact('group', 'users'));
     }

@@ -19,6 +19,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('user')->group(function () {
         Route::get('/lists', [ListController::class, 'getUsersLists'])->name('user.lists');
         Route::get('/groups', [GroupController::class, 'index'])->name('user.groups');
+        Route::get('/toggle-invites', [UserController::class, 'toggleGroupInvites'])->name('user.toggleInvites');
     });
 
     // Profile management
