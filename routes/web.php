@@ -42,7 +42,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/{id}/divide', [ListController::class, 'divide'])->name('lists.divide');
         Route::post('/{id}/duplicate', [ListController::class, 'duplicate'])->name('lists.duplicate');
         Route::patch('/{id}/reminder', [ListController::class, 'updateReminder'])->name('lists.updateReminder');
-        Route::post('/{list}/receipts', [ListController::class, 'uploadReceipt'])->name('lists.uploadReceipt');
+        Route::post('/{list}/receipts', [ListController::class, 'storeReceipt'])->name('lists.uploadReceipt');
+        Route::delete('/{list}/receipts', [ListController::class, 'destroyReceipt'])->name('receipts.destroy');
     });
 
     Route::prefix('groups')->group(function () {
@@ -66,7 +67,6 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/tag/{tag}', [TagController::class, 'index'])->name('tag.show');
-
     Route::patch('/items/{id}/mark-purchased', [ListController::class, 'markAsPurchased'])->name('items.markPurchased');
 
     // Tole je black box za mene lol kramar fix pls

@@ -107,15 +107,13 @@ class ListController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        // Handles the validation before the processing starts
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'belongs_to_a_group' => 'required|boolean',
             'group_id' => 'nullable|exists:groups,id',
         ]);
-
-        // An example of printing an array to the lists channel
-        Log::channel('lists')->debug(json_encode($request->all()));
 
         // Create the new list
         $list = new ShoppingList();
@@ -134,12 +132,10 @@ class ListController extends Controller
         $list->belongs_to_a_group = $request->belongs_to_a_group;
         $list->save();
 
+        // Syncs the tags that should belong to the group
         if ($request->tags) {
             $list->syncTags($request->tags);
         }
-
-        // An example of print an informational message
-        Log::channel('lists')->info('A new list has been created!');
 
         return redirect()->route('user.lists')->with('success', 'Seznam je bil uspešno ustvarjen!');
     }
@@ -156,7 +152,7 @@ class ListController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'amount' => 'required|integer|min:1',
-            'price_per_item' => 'nullable|numeric|min:0',
+            'price_per_item' => 'required|numeric|min:0',
         ]);
 
         $list = ShoppingList::findOrFail($id);
@@ -275,25 +271,6 @@ class ListController extends Controller
             ->with('success', 'Izdelki so bili uspešno uvoženi');
     }
 
-    public function uploadReceipt(Request $request, ShoppingList $list)
-    {
-        // Validacija vhodnih podatkov
-        $request->validate([
-            'receipt_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
-
-        // Shrani sliko v 'storage/app/public/receipts'
-        $path = $request->file('receipt_image')->store('receipts', 'public');
-
-        // Posodobi model s potjo slike
-        $list->receipt_image = $path;
-        $list->save();
-
-        // Preusmeri nazaj na prikaz seznama z uspešno sporočilo
-        return redirect()->route('lists.show', $list->id)
-            ->with('success', 'Račun je bil uspešno naložen!');
-    }
-
     public function storeReceipt(Request $request, $listId)
     {
         $request->validate([
@@ -301,7 +278,7 @@ class ListController extends Controller
             'file' => 'required|file|mimes:jpg,png,pdf|max:2048',
         ]);
 
-        $filePath = $request->file('file')->store('receipts');
+        $filePath = $request->file('file')->store('receipts', 'public');
 
         Receipt::create([
             'shopping_list_id' => $listId,
@@ -310,6 +287,19 @@ class ListController extends Controller
         ]);
 
         return redirect()->route('lists.show', $listId)->with('success', 'Račun je bil uspešno dodan.');
+    }
+
+    public function destroyReceipt($id)
+    {
+        $receipt = Receipt::findOrFail($id);
+
+        // Izbriši datoteko iz strežnika
+        Storage::delete($receipt->file_path);
+
+        // Izbriši zapis iz baze
+        $receipt->delete();
+
+        return redirect()->back()->with('success', 'Račun je bil uspešno izbrisan.');
     }
 
     /**
@@ -323,28 +313,37 @@ class ListController extends Controller
     {
         $request->validate([
             'quantity' => 'required|integer|min:1',
+            'price_per_item' => 'nullable|numeric|min:0|max:10000', // Dodaj max ceno po potrebi
         ]);
 
         $item = ListItem::findOrFail($id);
 
-        // validate requested quantity
+        // Preveri, ali je količina v dovoljenem obsegu
         if ($item->amount < $item->purchased + $request->quantity) {
             return redirect()->back()->with('error', 'Količina presega dovoljeno mejo.');
         }
 
-        // update purchased count
+        // Preveri, ali je skupna cena v dovoljenem obsegu
+        $totalPrice = $request->quantity * ($request->price_per_item ?? 0);
+        if ($totalPrice > 10000) { // Max znesek določi po potrebi
+            return redirect()->back()->with('error', 'Končni znesek presega dovoljeno mejo.');
+        }
+
+        // Posodobi število kupljenih izdelkov
         $item->purchased += $request->quantity;
         $item->save();
 
-        // record in the purchased_items table
+        // Zabeleži nakup
         PurchasedItem::create([
             'list_item_id' => $item->id,
             'user_id' => auth()->id(),
             'quantity' => $request->quantity,
+            'price_per_item' => $request->price_per_item ?? 0,
         ]);
 
         return redirect()->back()->with('success', 'Izdelek je bil kupljen.');
     }
+
 
     /**
      * Exports a report of who bought what and their total spending.
