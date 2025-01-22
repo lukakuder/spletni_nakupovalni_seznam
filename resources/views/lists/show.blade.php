@@ -187,16 +187,20 @@
                     @endif
 
                     <div id="receipt-modal" class="hidden mt-6">
-                        <form action="{{ route('lists.uploadReceipt', $list->id) }}" method="POST" enctype="multipart/form-data">
+                        <!-- Formular za nalaganje računa -->
+                        <form action="{{ route('lists.storeReceipt', $list->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
+                            <!-- Ime računa -->
                             <label for="name" class="block text-sm font-medium text-gray-900">{{ __('Ime računa') }}</label>
                             <input type="text" id="name" name="name"
                                    class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black">
 
+                            <!-- Izbira datoteke -->
                             <label for="file" class="block text-sm font-medium text-gray-900 mt-4">{{ __('Datoteka') }}</label>
                             <input type="file" id="file" name="file"
                                    class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black">
 
+                            <!-- Gumbi za oddajo ali preklic -->
                             <div class="flex justify-end mt-4">
                                 <button type="submit"
                                         class="bg-purple-500 hover:bg-purple-700 text-gray-900 font-bold py-2 px-4 rounded">

@@ -271,34 +271,46 @@ class ListController extends Controller
             ->with('success', 'Izdelki so bili uspešno uvoženi');
     }
 
+    /**
+     * Ustvari nov zapis za račun in ga poveže z nakupovalnim seznamom.
+     */
     public function storeReceipt(Request $request, $listId)
     {
+        // 1. Validacija - preveri ime računa in datoteko
         $request->validate([
             'name' => 'required|string|max:255',
             'file' => 'required|file|mimes:jpg,png,pdf|max:2048',
         ]);
 
+        // 2. Shrani datoteko v imenik 'public/receipts'
         $filePath = $request->file('file')->store('receipts', 'public');
 
+        // 3. Ustvari zapis v tabeli 'receipts'
         Receipt::create([
             'shopping_list_id' => $listId,
             'name' => $request->input('name'),
             'file_path' => $filePath,
         ]);
 
+        // 4. Preusmeritev z obvestilom o uspehu
         return redirect()->route('lists.show', $listId)->with('success', 'Račun je bil uspešno dodan.');
     }
 
+    /**
+     * Izbriše račun in povezan zapis v bazi.
+     */
     public function destroyReceipt($id)
     {
+        // 1. Poišči račun v bazi
         $receipt = Receipt::findOrFail($id);
 
-        // Izbriši datoteko iz strežnika
+        // 2. Izbriši datoteko iz strežnika
         Storage::delete($receipt->file_path);
 
-        // Izbriši zapis iz baze
+        // 3. Izbriši zapis iz baze
         $receipt->delete();
 
+        // 4. Preusmeritev z obvestilom o uspehu
         return redirect()->back()->with('success', 'Račun je bil uspešno izbrisan.');
     }
 
