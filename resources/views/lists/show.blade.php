@@ -190,7 +190,7 @@
                         <!-- Formular za nalaganje računa -->
                         <form action="{{ route('lists.storeReceipt', $list->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
-                            <!-- Ime računa -->
+                            <!-- Ime računa  -->
                             <label for="name" class="block text-sm font-medium text-gray-900">{{ __('Ime računa') }}</label>
                             <input type="text" id="name" name="name"
                                    class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black">
