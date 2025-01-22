@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
@@ -33,6 +34,7 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'profile_image' => ['nullable', 'image', 'max:1024'],
         ]);
 
         $user = User::create([
@@ -40,6 +42,20 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        if ($request->hasFile('profile_image')) {
+            $file = $request->file('profile_image');
+
+            $path = $file->store('profile_pictures', 'public');
+
+            if ($user->profile_picture && $user->profile_picture !== 'profile_pictures/default-avatar.png') {
+                Storage::disk('public')->delete($user->profile_picture);
+            }
+
+            $user->profile_picture = $path;
+        }
+
+        $user->save();
 
         event(new Registered($user));
 

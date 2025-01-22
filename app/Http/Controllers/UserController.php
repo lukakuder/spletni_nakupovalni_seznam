@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\ListFilters;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -11,7 +12,7 @@ use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
 
 
-class ProfileController extends Controller
+class UserController extends Controller
 {
     /**
      * Display the user's profile form.
@@ -23,17 +24,28 @@ class ProfileController extends Controller
         ]);
     }
 
+    public function myGroups()
+    {
+        // Fetch the groups for the authenticated user
+        $groups = auth()->user()->groups; // Assuming User model has a `groups` relationship
+
+        // Pass the data to a view
+        return view('user.groups', compact('groups'));
+    }
+
     /**
-     * Returns the view containing users lists
+     * Toggles the user's group invites setting.
      *
      * @param Request $request
-     * @return View
+     * @return RedirectResponse
      */
-    public function myLists(Request $request): View
+    public function toggleGroupInvites(Request $request)
     {
-        return view('user.lists', [
-            'lists' => $request->user()->lists,
-        ]);
+        $user = $request->user();
+        $user->allow_group_invites = !$user->allow_group_invites;
+        $user->save();
+
+        return back();
     }
 
     /**

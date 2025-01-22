@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('profile_picture')->default("profile_pictures/default-avatar.png");
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->boolean('allow_group_invites')->default(true);
             $table->rememberToken();
             $table->timestamps();
         });

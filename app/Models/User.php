@@ -18,7 +18,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'profile_picture'
+        'profile_picture',
+        'allow_group_invites',
     ];
 
     protected $hidden = [
@@ -35,6 +36,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     /**
      * The groups that belong to the user.
@@ -47,9 +52,6 @@ class User extends Authenticatable
     /**
      * Accessor for the profile picture URL.
      */
-    /**
-     * Accessor for the profile picture URL.
-     */
     public function getProfilePictureUrlAttribute(): ?string
     {
         return $this->profile_picture
@@ -57,9 +59,6 @@ class User extends Authenticatable
             : asset('storage/profile_pictures/default-avatar.png');
 
     }
-
-
-
     /**
      * The lists that belong only to the user, and aren't associated with a group.
      */

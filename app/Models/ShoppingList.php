@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Tags\HasTags;
 
 class ShoppingList extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasTags;
 
     /**
      * The attributes that are mass assignable.
@@ -23,7 +23,9 @@ class ShoppingList extends Model
         'group_id',
         'name',
         'description',
-        'belongs_to_a_group'
+        'belongs_to_a_group',
+        'reminder_date',
+        'receipt_image',
     ];
 
     /**
@@ -35,13 +37,14 @@ class ShoppingList extends Model
     {
         return [
             'belongs_to_a_group' => 'boolean',
+            'reminder_date' => 'date',
         ];
     }
 
     /**
      * The user that belong to the shopping list.
      */
-    protected function user(): BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
@@ -49,7 +52,7 @@ class ShoppingList extends Model
     /**
      * The group that belong to the shopping list.
      */
-    protected function group(): BelongsTo
+    public function group(): BelongsTo
     {
         return $this->belongsTo(Group::class, 'group_id');
     }
@@ -57,8 +60,25 @@ class ShoppingList extends Model
     /**
      * The items that belong to the shopping list.
      */
-    protected function items(): HasMany
+    public function items()
     {
-        return $this->hasMany(ListItem::class);
+        return $this->hasMany(ListItem::class, 'shopping_list_id');
+    }
+
+    /**
+     * ScopeFilter for filtering
+     *
+     * @param $query
+     * @param $filters
+     * @return mixed
+     */
+    public function scopeFilter($query, $filters)
+    {
+        return $filters->apply($query);
+    }
+
+    public function receipts()
+    {
+        return $this->hasMany(Receipt::class);
     }
 }
