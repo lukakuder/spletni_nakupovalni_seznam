@@ -171,7 +171,7 @@
                     @endif
 
                     <div id="receipt-modal" class="hidden mt-6">
-                        <form action="{{ route('lists.storeReceipt', $list->id) }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('lists.uploadReceipt', $list->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <label for="name" class="block text-sm font-medium text-gray-900">{{ __('Ime računa') }}</label>
                             <input type="text" id="name" name="name"

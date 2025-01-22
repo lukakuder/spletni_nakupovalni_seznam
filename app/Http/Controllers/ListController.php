@@ -107,15 +107,13 @@ class ListController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        // Handles the validation before the processing starts
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'belongs_to_a_group' => 'required|boolean',
             'group_id' => 'nullable|exists:groups,id',
         ]);
-
-        // An example of printing an array to the lists channel
-        Log::channel('lists')->debug(json_encode($request->all()));
 
         // Create the new list
         $list = new ShoppingList();
@@ -134,12 +132,10 @@ class ListController extends Controller
         $list->belongs_to_a_group = $request->belongs_to_a_group;
         $list->save();
 
+        // Syncs the tags that should belong to the group
         if ($request->tags) {
             $list->syncTags($request->tags);
         }
-
-        // An example of print an informational message
-        Log::channel('lists')->info('A new list has been created!');
 
         return redirect()->route('user.lists')->with('success', 'Seznam je bil uspešno ustvarjen!');
     }
