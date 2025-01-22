@@ -26,6 +26,11 @@ class GroupController extends Controller
 
         return view('user.groups', compact('groups'));
     }
+
+    /**
+     * @param $groupId
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application
+     */
     public function detailedShow($groupId)
     {
         $group = Group::find($groupId); // Predpostavljam, da imaš model Group
