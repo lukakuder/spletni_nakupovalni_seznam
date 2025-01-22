@@ -3,9 +3,9 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <x-slot name="header">
-                    <div class="flex justify-between items-center">
+                    <div class="flex justify-between items-center h-9">
                         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                            Vaša opozorila
+                            Moja opozorila
                         </h2>
                     </div>
                 </x-slot>
@@ -91,11 +91,9 @@
                             },
                             success: function (response) {
                                 if (response.status === 'success') {
-                                    alert(response.message);
-                                    location.reload();
-                                } else {
-                                    alert(response.message);
-                                }
+                                    //alert(response.message);
+
+                                }  window.location.href = "{{ route('opozorila.index') }}"
                             },
                             error: function () {
                                 alert('Prišlo je do napake pri sprejemu povabila.');
@@ -108,6 +106,7 @@
                             $('#neprebrana-opozorila').text('Neprebrana obvestila: ' + data.neprebranaOpozorila);
                         });
                     }
+
                 });
             </script>
         </div>

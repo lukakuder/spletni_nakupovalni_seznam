@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
+        <div class="flex justify-between items-center h-9">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('Seznam detajli') }}
             </h2>
@@ -187,7 +187,7 @@
                     @endif
 
                     <div id="receipt-modal" class="hidden mt-6">
-                        <form action="{{ route('lists.storeReceipt', $list->id) }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('lists.uploadReceipt', $list->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <label for="name" class="block text-sm font-medium text-gray-900">{{ __('Ime računa') }}</label>
                             <input type="text" id="name" name="name"

@@ -20,7 +20,9 @@
                             <label for="users" class="text-gray-700 dark:text-gray-300">Izberite člane:</label>
                             <select name="users[]" id="users" class="form-control mt-2" multiple>
                                 @foreach ($users as $user)
-                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                    @if ($user->id !== auth()->id())
+                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>
