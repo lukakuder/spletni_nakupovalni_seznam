@@ -41,12 +41,16 @@ class NotificationController extends Controller
     }
 
 
-
+    /**
+     * funkcija se sklicuje na tabelo opozoril uporabnika samo tabelo sortira in jo vrne.
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application
+     */
     public function prikaziOpozorila()
     {
         $opozorila = Notification::where('user_id', Auth::id()) // Filtriranje po trenutnem uporabniku
-        ->orderBy('prebrano', 'asc')
-            ->orderBy('created_at', 'desc')
+        ->orderBy('prebrano', 'asc')//neprebrana na vrhu
+            ->orderBy('created_at', 'desc')//od novejsih nazaj
             ->get();
 
         return view('opozorila.index', compact('opozorila'));

@@ -71,6 +71,7 @@
                                     row.find('td:nth-child(3)').text('Da');
                                     row.find('.oznaci-prebrano').fadeOut();
                                     osveziSteviloNeprebranih();
+                                    window.location.href = "{{ route('opozorila.index') }}"
                                 }
                             },
                             error: function () {
@@ -94,6 +95,7 @@
                                     //alert(response.message);
 
                                 }  window.location.href = "{{ route('opozorila.index') }}"
+                                osveziSteviloNeprebranih();
                             },
                             error: function () {
                                 alert('Prišlo je do napake pri sprejemu povabila.');
