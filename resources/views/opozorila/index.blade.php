@@ -91,11 +91,9 @@
                             },
                             success: function (response) {
                                 if (response.status === 'success') {
-                                    alert(response.message);
-                                    location.reload();
-                                } else {
-                                    alert(response.message);
-                                }
+                                    //alert(response.message);
+
+                                }  window.location.href = "{{ route('opozorila.index') }}"
                             },
                             error: function () {
                                 alert('Prišlo je do napake pri sprejemu povabila.');
@@ -108,6 +106,7 @@
                             $('#neprebrana-opozorila').text('Neprebrana obvestila: ' + data.neprebranaOpozorila);
                         });
                     }
+
                 });
             </script>
         </div>
