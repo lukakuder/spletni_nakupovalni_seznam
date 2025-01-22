@@ -66,7 +66,6 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/tag/{tag}', [TagController::class, 'index'])->name('tag.show');
-
     Route::patch('/items/{id}/mark-purchased', [ListController::class, 'markAsPurchased'])->name('items.markPurchased');
 
     // Tole je black box za mene lol kramar fix pls
