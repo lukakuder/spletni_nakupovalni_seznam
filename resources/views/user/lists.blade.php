@@ -82,7 +82,7 @@
 
                             <!-- Gumb za kopiranje seznama -->
                             <button
-                                class="copy-list-btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mt-4"
+                                class="copy-list-btn bg-blue-500 text-gray px-4 py-2 rounded hover:bg-blue-700 mt-4"
                                 data-id="{{ $list->id }}">
                                 Kopiraj seznam
                             </button>
