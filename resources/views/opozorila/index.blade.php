@@ -4,7 +4,7 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <x-slot name="header">
                     <div class="flex justify-between items-center h-9">
-                        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight ml-3">
                             Moja opozorila
                         </h2>
                     </div>
