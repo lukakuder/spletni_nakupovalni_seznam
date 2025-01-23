@@ -23,8 +23,12 @@ class NotificationController extends Controller
         return view('opozorila.index', compact('opozorila', 'neprebranaOpozorila'));
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse\
+     */
 
-    public function oznaciPrebrano(Request $request)
+    public function showRead(Request $request)
     {
         $opozorilo = Notification::where('id', $request->id)
             ->where('user_id', Auth::id())
@@ -41,18 +45,27 @@ class NotificationController extends Controller
     }
 
 
-
-    public function prikaziOpozorila()
+    /**
+     * funkcija se sklicuje na tabelo opozoril uporabnika samo tabelo sortira in jo vrne.
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application
+     */
+    public function showNotification()
     {
         $opozorila = Notification::where('user_id', Auth::id()) // Filtriranje po trenutnem uporabniku
-        ->orderBy('prebrano', 'asc')
-            ->orderBy('created_at', 'desc')
+        ->orderBy('prebrano', 'asc')//neprebrana na vrhu
+            ->orderBy('created_at', 'desc')//od novejsih nazaj
             ->get();
 
         return view('opozorila.index', compact('opozorila'));
     }
 
-    public function posljiPovabilo(Request $request, $groupId)
+    /**
+     * @param Request $request
+     * @param $groupId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sendInvite(Request $request, $groupId)
     {
         $userId = $request->input('user_id'); // ID uporabnika, ki ga povabite
         $group = Group::findOrFail($groupId); // Preverite, če skupina obstaja
@@ -72,8 +85,7 @@ class NotificationController extends Controller
 
         return response()->json(['status' => 'success', 'message' => 'Povabilo poslano.']);
     }
-
-    public function sprejmiPovabilo($notificationId)
+    public function acceptInvite($notificationId)
     {
         $opozorilo = Notification::where('id', $notificationId)
             ->where('user_id', Auth::id())
@@ -99,7 +111,7 @@ class NotificationController extends Controller
 
 
 
-    public function steviloNeprebranih()
+    public function NumberOfUnread()
     {
         $neprebranaOpozorila = Notification::where('user_id', Auth::id())
             ->where('prebrano', false)

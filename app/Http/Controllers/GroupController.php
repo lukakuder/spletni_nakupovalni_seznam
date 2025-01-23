@@ -26,6 +26,11 @@ class GroupController extends Controller
 
         return view('user.groups', compact('groups'));
     }
+
+    /**
+     * @param $groupId
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application
+     */
     public function detailedShow($groupId)
     {
         $group = Group::find($groupId); // Predpostavljam, da imaš model Group
@@ -131,7 +136,7 @@ class GroupController extends Controller
     public function addMembersForm($groupId)
     {
         $group = Group::findOrFail($groupId);
-        $users = User::all(); // Pridobite vse uporabnike, ki jih lahko dodate v skupino
+        $users = User::where('allow_group_invites', true)->get();
 
         return view('groups.add-member', compact('group', 'users'));
     }

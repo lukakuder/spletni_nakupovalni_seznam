@@ -3,9 +3,9 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <x-slot name="header">
-                    <div class="flex justify-between items-center">
-                        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                            Vaša opozorila
+                    <div class="flex justify-between items-center h-9">
+                        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight ml-3">
+                            Moja opozorila
                         </h2>
                     </div>
                 </x-slot>
@@ -71,6 +71,7 @@
                                     row.find('td:nth-child(3)').text('Da');
                                     row.find('.oznaci-prebrano').fadeOut();
                                     osveziSteviloNeprebranih();
+                                    window.location.href = "{{ route('opozorila.index') }}"
                                 }
                             },
                             error: function () {
@@ -94,6 +95,7 @@
                                     //alert(response.message);
 
                                 }  window.location.href = "{{ route('opozorila.index') }}"
+                                osveziSteviloNeprebranih();
                             },
                             error: function () {
                                 alert('Prišlo je do napake pri sprejemu povabila.');
