@@ -219,7 +219,67 @@
                             {{ session('success') }}
                         </div>
                     @endif
+
+                    <div class="mt-6">
+                        <h3 class="text-lg font-bold mb-4">Dodaj komentar</h3>
+
+                        <!-- Form for Adding Comments -->
+                        <form action="{{ route('lists.comments.store', $list->id) }}" method="POST">
+                            @csrf
+                            <textarea name="comment" rows="3" placeholder="Vpišite svoj komentar..."
+                                      class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                      required></textarea>
+                            <button type="submit"
+                                    class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                Dodaj komentar
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="mt-6">
+                        <h3 class="text-lg font-bold mb-4">Komentarji</h3>
+                        <ul style="list-style-type: disc; padding-left: 1.5rem; margin-top: 1rem;">
+                            @forelse ($list->opombe ?? [] as $comment)
+                                <li style="margin-bottom: 0.5rem; font-size: 1rem; color: #333;">
+                                    {{ $comment }}
+                                </li>
+                            @empty
+                                <p style="font-size: 1rem; color: #666;">Trenutno ni komentarjev.</p>
+                            @endforelse
+                        </ul>
+                    </div>
+
+                    <!-- Delete Button -->
+                    <button id="delete-button"
+                            style="background-color: #e3342f; color: white; font-weight: bold; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">
+                        Izbriši seznam
+                    </button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="delete-modal"
+         style="display: none; position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.75); align-items: center; justify-content: center; z-index: 50;">
+        <div style="background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%; max-width: 400px; text-align: center;">
+            <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">Potrdite brisanje</h3>
+            <p style="margin-bottom: 20px;">Ali ste prepričani, da želite izbrisati ta seznam? Dejanja ni mogoče razveljaviti.</p>
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <!-- Cancel Button -->
+                <button id="cancel-delete"
+                        style="background-color: #6c757d; color: white; font-weight: bold; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">
+                    Prekliči
+                </button>
+                <!-- Confirm Delete Form -->
+                <form action="{{ route('lists.destroy', $list->id) }}" method="POST" style="display: inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit"
+                            style="background-color: #e3342f; color: white; font-weight: bold; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">
+                        Izbriši
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -391,5 +451,30 @@
         });
 
     </script>
+
+    <script>
+        // Select modal and trigger elements
+        const deleteButton = document.getElementById('delete-button');
+        const deleteModal = document.getElementById('delete-modal');
+        const cancelDelete = document.getElementById('cancel-delete');
+
+        // Show modal only when the delete button is clicked
+        deleteButton.addEventListener('click', () => {
+            deleteModal.style.display = 'flex'; // Show the modal
+        });
+
+        // Hide modal when the cancel button is clicked
+        cancelDelete.addEventListener('click', () => {
+            deleteModal.style.display = 'none'; // Hide the modal
+        });
+
+        // Hide modal if the user clicks outside the modal content
+        window.addEventListener('click', (event) => {
+            if (event.target === deleteModal) {
+                deleteModal.style.display = 'none'; // Hide the modal
+            }
+        });
+    </script>
+
 
 </x-app-layout>

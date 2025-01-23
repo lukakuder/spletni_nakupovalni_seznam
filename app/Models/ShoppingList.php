@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Tags\HasTags;
 
 class ShoppingList extends Model
 {
-    use HasFactory, Notifiable, HasTags;
+    use HasFactory, Notifiable, HasTags, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -26,7 +27,9 @@ class ShoppingList extends Model
         'belongs_to_a_group',
         'reminder_date',
         'receipt_image',
+        'deleted_at'
     ];
+
 
     /**
      * Get the attributes that should be cast.
@@ -38,6 +41,7 @@ class ShoppingList extends Model
         return [
             'belongs_to_a_group' => 'boolean',
             'reminder_date' => 'date',
+            'opombe' => 'array',
         ];
     }
 

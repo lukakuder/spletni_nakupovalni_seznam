@@ -44,6 +44,8 @@ Route::middleware('auth')->group(function () {
         Route::patch('/{id}/reminder', [ListController::class, 'updateReminder'])->name('lists.updateReminder');
         Route::post('/{list}/receipts', [ListController::class, 'storeReceipt'])->name('lists.uploadReceipt');
         Route::delete('/{list}/receipts', [ListController::class, 'destroyReceipt'])->name('receipts.destroy');
+        Route::delete('/lists/{id}', [ListController::class, 'destroy'])->name('lists.destroy');
+        Route::post('/lists/{id}/comments', [ListController::class, 'storeComment'])->name('lists.comments.store');
     });
 
     Route::prefix('groups')->group(function () {
