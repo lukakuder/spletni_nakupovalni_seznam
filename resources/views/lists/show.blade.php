@@ -236,7 +236,7 @@
                         </form>
                     </div>
 
-                    <div class="mt-6">
+                    <div class="mt-6 mb-6">
                         <h3 class="text-lg font-bold mb-4">Komentarji</h3>
                         <ul style="list-style-type: disc; padding-left: 1.5rem; margin-top: 1rem;">
                             @forelse ($list->opombe ?? [] as $comment)
