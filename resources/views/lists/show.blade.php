@@ -35,7 +35,7 @@
                             <div class="flex items-center justify-between mb-6">
                                 <!-- Item Name and Progress -->
                                 <div class="flex items-center justify-start" style="width: 60%">
-                                    <span class="text-white font-medium"
+                                    <span class="text-gray-500 font-medium"
                                           style="min-width: 100px">{{ $item->name }}</span>
 
                                     <!-- Purchased Text and Quantity -->
