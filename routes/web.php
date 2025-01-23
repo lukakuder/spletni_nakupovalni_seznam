@@ -42,7 +42,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/{id}/divide', [ListController::class, 'divide'])->name('lists.divide');
         Route::post('/{id}/duplicate', [ListController::class, 'duplicate'])->name('lists.duplicate');
         Route::patch('/{id}/reminder', [ListController::class, 'updateReminder'])->name('lists.updateReminder');
-        Route::post('/{list}/receipts', [ListController::class, 'uploadReceipt'])->name('lists.uploadReceipt');
+        Route::post('/{list}/receipts', [ListController::class, 'storeReceipt'])->name('lists.uploadReceipt');
+        Route::delete('/{list}/receipts', [ListController::class, 'destroyReceipt'])->name('receipts.destroy');
     });
 
     Route::prefix('groups')->group(function () {
@@ -55,34 +56,33 @@ Route::middleware('auth')->group(function () {
         Route::post('/{group}/add-members', [GroupController::class, 'addMembers'])->name('groups.addMembers');
         Route::post('/{group}/leave', [GroupController::class, 'leave'])->name('groups.leave');
         Route::get('/{group}/detailed-show', [GroupController::class, 'detailedShow'])->name('groups.detailedShow');
-        Route::post('/{groupId}/invite', [NotificationController::class, 'posljiPovabilo']);
+        Route::post('/{groupId}/invite', [NotificationController::class, 'sendInvite']);
     });
 
     Route::prefix('opozorila')->group(function () {
-        Route::get('/', [NotificationController::class, 'prikaziOpozorila'])->name('opozorila.index');
-        Route::post('/oznaci-prebrano', [NotificationController::class, 'oznaciPrebrano'])->name('opozorila.oznaciPrebrano');
-        Route::get('/stevilo-neprebranih', [NotificationController::class, 'steviloNeprebranih'])->name('opozorila.steviloNeprebranih');
-        Route::post('/sprejmi/{id}', [NotificationController::class, 'sprejmiPovabilo'])->name('opozorila.sprejmiPovabilo');
+        Route::get('/', [NotificationController::class, 'showNotification'])->name('opozorila.index');
+        Route::post('/oznaci-prebrano', [NotificationController::class, 'showRead'])->name('opozorila.oznaciPrebrano');
+        Route::get('/stevilo-neprebranih', [NotificationController::class, 'NumberOfUnread'])->name('opozorila.steviloNeprebranih');
+        Route::post('/sprejmi/{id}', [NotificationController::class, 'acceptInvite'])->name('opozorila.sprejmiPovabilo');
     });
 
     Route::get('/tag/{tag}', [TagController::class, 'index'])->name('tag.show');
-
     Route::patch('/items/{id}/mark-purchased', [ListController::class, 'markAsPurchased'])->name('items.markPurchased');
 
     // Tole je black box za mene lol kramar fix pls
     Route::middleware('auth')->get('/opozorila', [NotificationController::class, 'index'])->name('opozorila.index');
-    Route::get('/opozorila', [NotificationController::class, 'prikaziOpozorila'])->name('opozorila.index');
+    Route::get('/opozorila', [NotificationController::class, 'showNotification'])->name('opozorila.index');
 
     // Označevanje opozorila kot prebranega
-    Route::middleware('auth')->post('/opozorila/oznaci-prebrano', [NotificationController::class, 'oznaciPrebrano'])->name('opozorila.oznaciPrebrano');
-    Route::post('/opozorila/oznaci-prebrano', [NotificationController::class, 'oznaciPrebrano'])->name('opozorila.oznaciPrebrano');
+    Route::middleware('auth')->post('/opozorila/oznaci-prebrano', [NotificationController::class, 'showRead'])->name('opozorila.oznaciPrebrano');
+    Route::post('/opozorila/oznaci-prebrano', [NotificationController::class, 'showRead'])->name('opozorila.oznaciPrebrano');
 
     // Pridobitev števila neprebranih opozoril
-    Route::middleware('auth')->get('/opozorila/stevilo-neprebranih', [NotificationController::class, 'steviloNeprebranih'])->name('opozorila.steviloNeprebranih');
-    Route::get('/opozorila/stevilo-neprebranih', [NotificationController::class, 'steviloNeprebranih'])->name('opozorila.steviloNeprebranih');
+    Route::middleware('auth')->get('/opozorila/stevilo-neprebranih', [NotificationController::class, 'NumberOfUnread'])->name('opozorila.steviloNeprebranih');
+    Route::get('/opozorila/stevilo-neprebranih', [NotificationController::class, 'NumberOfUnread'])->name('opozorila.steviloNeprebranih');
 
-    Route::post('/notification/{notificationId}/accept', [NotificationController::class, 'sprejmiPovabilo'])->middleware('auth');
-    Route::post('/opozorila/sprejmi/{id}', [NotificationController::class, 'sprejmiPovabilo'])->name('opozorila.sprejmiPovabilo');
+    Route::post('/notification/{notificationId}/accept', [NotificationController::class, 'acceptInvite'])->middleware('auth');
+    Route::post('/opozorila/sprejmi/{id}', [NotificationController::class, 'acceptInvite'])->name('opozorila.sprejmiPovabilo');
 
 });
 

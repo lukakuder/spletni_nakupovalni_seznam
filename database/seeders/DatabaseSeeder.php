@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
             //Pri tem lahk pride do napake ker more username bit unique
             //GroupSeeder::class,
             TagSeeder::class,
+            GroupSeeder::class,
+            ShoppingListSeeder::class,
         ]);
     }
 }

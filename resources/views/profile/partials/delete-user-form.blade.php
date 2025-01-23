@@ -5,7 +5,7 @@
         </h2>
 
         <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {{ __('Ko je vaš račun izbrisan, bodo vsi njegovi viri in podatki trajno izbrisani. Preden izbrišete svoj račun, prenesite vse podatke ali informacije, ki jih želite obdržati.') }}
+            {{ __('Ko je vaš račun izbrisan, bodo vsi njegovi viri in podatki trajno izbrisani!') }}
         </p>
     </header>
 
