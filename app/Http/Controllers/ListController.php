@@ -358,48 +358,71 @@ class ListController extends Controller
 
 
     /**
-     * Exports a report of who bought what and their total spending.
+     * Izvozi podrobno poročilo o seznamu nakupov.
      *
      * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function export_report(int $id): \Illuminate\Http\Response
     {
+        // Pridobivanje seznama in povezanih artiklov ter nakupov
         $list = ShoppingList::where('id', $id)
             ->where('user_id', auth()->id())
             ->with(['items.purchasedItems.user'])
             ->firstOrFail();
 
-        $fileContent = "Poročilo o nakupih za seznam: " . $list->name . "\n\n";
-        $fileContent .= "Nakupi:\n";
+        // Osnovni podatki o seznamu
+        $fileContent = "Poročilo o seznamu: " . $list->name . "\n\n";
+        $fileContent .= "Podrobnosti nakupov:\n";
 
         $spending = [];
+        $totalListCost = 0;
 
         foreach ($list->items as $item) {
-            foreach ($item->purchasedItems as $purchase) {
-                $userName = $purchase->user->name;
-                $quantity = $purchase->quantity;
-                $totalCost = $quantity * $item->price_per_item;
+            $totalItemCost = $item->price_per_item * $item->amount;
+            $totalListCost += $totalItemCost;
 
-                $fileContent .= "- " . $userName . " kupil " . $quantity .
-                    "x " . $item->name .
-                    " (Cena na kos: " . number_format($item->price_per_item, 2) .
-                    ", Skupna cena: " . number_format($totalCost, 2) . ")\n";
+            $fileContent .= "- Artikel: " . $item->name . "\n";
+            $fileContent .= "  Količina: " . $item->amount . "\n";
+            $fileContent .= "  Cena na kos: " . number_format($item->price_per_item, 2) . " €\n";
+            $fileContent .= "  Skupna cena artikla: " . number_format($totalItemCost, 2) . " €\n";
 
-                if (!isset($spending[$userName])) {
-                    $spending[$userName] = 0;
+            // Podatki o nakupih za ta artikel
+            if ($item->purchasedItems->count() > 0) {
+                $fileContent .= "  Nakupi:\n";
+                foreach ($item->purchasedItems as $purchase) {
+                    $userName = $purchase->user->name ?? 'Neznan uporabnik';
+                    $quantity = $purchase->quantity;
+                    $userTotal = $quantity * $item->price_per_item;
+
+                    $fileContent .= "    - " . $userName . " kupil " . $quantity . "x (" .
+                        number_format($userTotal, 2) . " €)\n";
+
+                    if (!isset($spending[$userName])) {
+                        $spending[$userName] = 0;
+                    }
+                    $spending[$userName] += $userTotal;
                 }
-                $spending[$userName] += $totalCost;
+            } else {
+                $fileContent .= "  Nakupi: Ni podatkov o nakupih.\n";
             }
+
+            $fileContent .= "\n";
         }
 
-        $fileContent .= "\nSkupni stroški:\n";
+        // Dodajanje skupnih stroškov
+        $fileContent .= "Skupni stroški za seznam: " . number_format($totalListCost, 2) . " €\n\n";
+
+        // Dodajanje stroškov po uporabnikih
+        $fileContent .= "Skupni stroški po uporabnikih:\n";
         foreach ($spending as $userName => $totalSpent) {
-            $fileContent .= "- " . $userName . ": " . number_format($totalSpent, 2) . "€\n";
+            $fileContent .= "- " . $userName . ": " . number_format($totalSpent, 2) . " €\n";
         }
 
+        // Ustvarjanje imena datoteke
         $fileName = 'porocilo_' . $list->name . '.txt';
 
+        // Vrnitev datoteke kot odgovor
         return Response::make($fileContent, 200, [
             'Content-Type' => 'text/plain',
             'Content-Disposition' => "attachment; filename=\"$fileName\"",
@@ -479,4 +502,46 @@ class ListController extends Controller
             'new_list' => $newList,
         ], 201);
     }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param int $id
+     */
+    public function destroy(int $id)
+    {
+        $list = ShoppingList::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        $list->delete();
+
+        return redirect('/user/lists')->with('success', 'Seznam je bil uspešno izbrisan.');
+    }
+
+    /**
+     * Store a new comment for the shopping list.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return RedirectResponse
+     */
+    public function storeComment(Request $request, int $id): RedirectResponse
+    {
+        $request->validate([
+            'comment' => 'required|string|max:1000',
+        ]);
+
+        $list = ShoppingList::findOrFail($id);
+
+        // Add the new comment to the 'opombe' array
+        $comments = $list->opombe ?? [];
+        $comments[] = $request->comment;
+
+        $list->opombe = $comments;
+        $list->save();
+
+        return redirect()->route('lists.show', $id)->with('success', 'Komentar je bil uspešno dodan.');
+    }
+
 }
