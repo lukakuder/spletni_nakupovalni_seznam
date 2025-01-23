@@ -468,10 +468,17 @@ class ListController extends Controller
         $newList->save();
 
         // Kopiraj pripadajoče elemente seznama
-        foreach ($originalList->items as $item) {
-            $newItem = $item->replicate();
-            $newItem->list_id = $newList->id;
-            $newItem->save();
+        try {
+            foreach ($originalList->items as $item) {
+                $newItem = $item->replicate();
+                $newItem->shopping_list_id = $newList->id; // Uporabite pravilno ime stolpca
+                $newItem->save();
+            }
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Prišlo je do napake pri kopiranju artiklov: ' . $e->getMessage(),
+            ], 500);
         }
 
         return response()->json([
